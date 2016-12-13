@@ -10,7 +10,7 @@ def server():
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM, socket.IPPROTO_TCP)
     address = ("127.0.0.1", 5000)
     server_socket.bind(address)
-    server_socket.listen(2)
+    server_socket.listen(1)
     conn, addr = server_socket.accept()
     buffer_length = 8
     message_complete = False
