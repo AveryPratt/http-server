@@ -18,4 +18,9 @@ def test2():
 
 def test3():
     """Test if string that is longer than buffer length gets sent."""
-    assert client.client("hlo gdby") == "I don't know why you say 'goodbye' I say 'hello'"
+    assert client.client("hlo gdby") == "hlo gdby"
+
+
+def test4():
+    """Test if string that is longer than buffer length gets sent."""
+    assert client.client("¡¢£¤¥") == "¡¢£¤¥"
