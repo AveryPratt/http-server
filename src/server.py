@@ -39,7 +39,7 @@ def response_ok():
         "Last-Modified: Wed, 22 Jul 1884 19:15:56 GMT\r\n" +
         "Content-Length: 88\r\n" +
         "Content-Type: text/html\r\n" +
-        "Connection: Closed\r\n" +
+        "Connection: Closed\r\n\r\n" +
         "<html>\r\n" +
         "<body>\r\n" +
         "<h1>Hello, World!</h1>\r\n" +
@@ -55,7 +55,7 @@ def response_error():
         "Last-Modified: Wed, 22 Jul 1884 19:15:56 GMT\r\n" +
         "Content-Length: 96\r\n" +
         "Content-Type: text/html\r\n" +
-        "Connection: Closed\r\n" +
+        "Connection: Closed\r\n\r\n" +
         "<html>\r\n" +
         "<body>\r\n" +
         "<h1>Internal Server Error</h1>\r\n" +
