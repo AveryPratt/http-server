@@ -8,7 +8,7 @@ import sys
 def server():
     """Recieves a message from the client and echos it back."""
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM, socket.IPPROTO_TCP)
-    address = ("127.0.0.1", 5000)
+    address = ("127.0.0.1", 5002)
     server_socket.bind(address)
     server_socket.listen(3)
     conn, addr = server_socket.accept()
@@ -21,3 +21,4 @@ def server():
             break
     conn.sendall(response.encode('utf8'))
     conn.close()
+    return response
