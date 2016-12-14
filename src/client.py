@@ -9,7 +9,7 @@ def client(message):
     """Creates the protocol for interacting with server."""
     if len(message) % 8 == 0:
         message += '$'
-    info = socket.getaddrinfo('127.0.0.1', 8093)
+    info = socket.getaddrinfo('127.0.0.1', 5119)
     stream_info = [i for i in info if i[1] == socket.SOCK_STREAM][0]
     client_socket = socket.socket(*stream_info[:3])
     client_socket.connect(stream_info[-1])

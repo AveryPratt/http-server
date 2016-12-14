@@ -8,25 +8,26 @@ import sys
 def server():
     """Recieves a message from the client and echos it back."""
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM, socket.IPPROTO_TCP)
-    address = ("127.0.0.1", 8093)
+    address = ("127.0.0.1", 5119)
     server_socket.bind(address)
     server_socket.listen(1)
     conn, addr = server_socket.accept()
     buffer_length = 8
     message_complete = False
     response = ""
+    sent = False
     while not message_complete:
         addition = conn.recv(buffer_length).decode('utf-8')
         response += addition
-        print('r' + response)
-        print('a' + addition)
         if response == 'fuck you.':
             conn.sendall(response_error().encode('utf-8'))
+            sent = True
             break
         elif len(addition) < buffer_length:
             break
     print(response)
-    conn.sendall(response_ok().encode('utf-8'))
+    if not sent:
+        conn.sendall(response_ok().encode('utf-8'))
     conn.close()
 
 
