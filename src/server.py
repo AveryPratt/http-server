@@ -45,13 +45,37 @@ def method_validation(request):
     return True
 
 def version_validation(request):
-    pass
+    for ind in range(0, len(request)):
+        if request[ind:ind + 9] == " HTTP/1.1":
+            return True
+    return False
+
 
 def host_validation(request):
-    pass
+    for ind in range(0, len(request)):
+        if request[ind:ind + 8] == "\r\nHost: ":
+            return True
+    return False
 
 def format_validation(request):
-    pass
+    val_count = 0
+    for ind in range(0, len(request)):
+        if val_count == 0 or val_count == 1:
+            if request[ind] == " ":
+                val_count += 1
+            elif request[ind:ind + 1] == "\r\n":
+                return False
+        elif val_count == 2:
+            if request[ind:ind + 1] == "\r\n":
+                val_count += 1
+            elif request[ind] == " ":
+                return False
+        elif val_count % 2 == 1:
+            if request[ind] == ":":
+                val_count += 1
+            elif request[ind] == " ":
+                return False
+    return True
 
 
 def response_error(key):
