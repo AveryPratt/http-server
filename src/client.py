@@ -5,21 +5,23 @@ import socket
 import sys
 
 
-def client(message):
+def client(message, port):
     """Creates the protocol for interacting with server."""
-    info = socket.getaddrinfo('127.0.0.1', 5003)
+    if len(message) % 8 == 0:
+        message += '$'
+    info = socket.getaddrinfo('127.0.0.1', port)
     stream_info = [i for i in info if i[1] == socket.SOCK_STREAM][0]
     client_socket = socket.socket(*stream_info[:3])
     client_socket.connect(stream_info[-1])
     buffer_length = 8
     reply_complete = False
     response = ""
-    client_socket.sendall(message.encode('utf8'))
-    # client_socket.listen(3)
+    print(message.encode('utf-8'))
+    client_socket.sendall(message.encode('utf-8'))
     while not reply_complete:
-        data = client_socket.recv(buffer_length).decode('utf8')
+        data = client_socket.recv(buffer_length).decode('utf-8')
         response += data
-        if len(response) < buffer_length:
+        if len(data) < buffer_length:
             break
     client_socket.close()
     return response
