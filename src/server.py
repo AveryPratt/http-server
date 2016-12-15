@@ -19,16 +19,26 @@ def server(port):
     while not message_complete:
         addition = conn.recv(buffer_length).decode('utf-8')
         response += addition
-        if response == 'fuck you.':
-            conn.sendall(response_error().encode('utf-8'))
-            sent = True
-            break
-        elif len(addition) < buffer_length:
+        if len(addition) < buffer_length:
             break
     print(response)
     if not sent:
-        conn.sendall(response_ok().encode('utf-8'))
+        conn.sendall(parse_request(response).encode('utf-8'))
     conn.close()
+
+
+def parse_request(request):
+    if not method_validation(request):
+        return response_error()
+    return response_ok()
+
+
+def method_validation(request):
+    method = request.split()[0]
+    if method != "GET":
+        return False
+    return True
+    
 
 
 def response_ok():

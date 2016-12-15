@@ -19,7 +19,7 @@ def test_response_ok():
         "<h1>Hello, World!</h1>\r\n" +
         "</body>\r\n" +
         "</html>")
-    assert client("hello", 5001) == response
+    assert client("GET hello", 5007) == response
 
 
 def test_response_failed():
@@ -37,4 +37,4 @@ def test_response_failed():
         "<h1>Internal Server Error</h1>\r\n" +
         "</body>\r\n" +
         "</html>")
-    assert client("fuck you.", 5002) == response
+    assert client("fuck you.", 5008) == response
