@@ -80,8 +80,8 @@ def format_validation(request):
 
 def response_error(key):
     """Returns a response for an error (or OK) specified by the key."""
-    if key == "OK":
-        response = ("HTTP/1.1 200 OK\r\n" +
+    response_dict = {
+        "OK": ("HTTP/1.1 200 OK\r\n" +
                     "Date: Mon, 23 May 2005 22:38:34 GMT\r\n" +
                     "Server: Apache/1.3.3.7 (Unix) (Red-Hat/Linux)\r\n" +
                     "Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\r\n" +
@@ -91,9 +91,8 @@ def response_error(key):
                     "Connection: close\r\n" +
                     "Content-Type: text/html; charset=UTF-8\r\n" +
                     "\r\n" +
-                    "<438 bytes of content>")
-    elif key == "method":
-        response = ("HTTP/1.1 405 Method Not Allowed\r\n" +
+                    "<438 bytes of content>"),
+        "method": ("HTTP/1.1 405 Method Not Allowed\r\n" +
                     "Date: Mon, 23 May 2005 22:38:34 GMT\r\n" +
                     "Server: Apache/1.3.3.7 (Unix) (Red-Hat/Linux)\r\n" +
                     "Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\r\n" +
@@ -103,9 +102,8 @@ def response_error(key):
                     "Connection: close\r\n" +
                     "Content-Type: text/html; charset=UTF-8\r\n" +
                     "\r\n" +
-                    "<438 bytes of content>")
-    elif key == "version":
-        response = ("HTTP/1.1 403 Forbidden\r\n" +
+                    "<438 bytes of content>"),
+        "version": ("HTTP/1.1 403 Forbidden\r\n" +
                     "Date: Mon, 23 May 2005 22:38:34 GMT\r\n" +
                     "Server: Apache/1.3.3.7 (Unix) (Red-Hat/Linux)\r\n" +
                     "Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\r\n" +
@@ -115,9 +113,8 @@ def response_error(key):
                     "Connection: close\r\n" +
                     "Content-Type: text/html; charset=UTF-8\r\n" +
                     "\r\n" +
-                    "<438 bytes of content>")
-    elif key == "host":
-        response = ("HTTP/1.1 417 Expectation Failed\r\n" +
+                    "<438 bytes of content>"),
+        "host": ("HTTP/1.1 417 Expectation Failed\r\n" +
                     "Date: Mon, 23 May 2005 22:38:34 GMT\r\n" +
                     "Server: Apache/1.3.3.7 (Unix) (Red-Hat/Linux)\r\n" +
                     "Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\r\n" +
@@ -127,9 +124,8 @@ def response_error(key):
                     "Connection: close\r\n" +
                     "Content-Type: text/html; charset=UTF-8\r\n" +
                     "\r\n" +
-                    "<438 bytes of content>")
-    elif key == "format":
-        response = ("HTTP/1.1 400 Bad Request\r\n" +
+                    "<438 bytes of content>"),
+        "format": ("HTTP/1.1 400 Bad Request\r\n" +
                     "Date: Mon, 23 May 2005 22:38:34 GMT\r\n" +
                     "Server: Apache/1.3.3.7 (Unix) (Red-Hat/Linux)\r\n" +
                     "Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\r\n" +
@@ -139,5 +135,9 @@ def response_error(key):
                     "Connection: close\r\n" +
                     "Content-Type: text/html; charset=UTF-8\r\n" +
                     "\r\n" +
-                    "<438 bytes of content>")
-    return response
+                    "<438 bytes of content>"),
+    }
+    for each in response_dict:
+        if key == each:
+            return response_dict[key]
+    return response_dict["format"]
