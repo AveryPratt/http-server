@@ -59,6 +59,7 @@ def host_validation(request):
 
 def format_validation(request):
     val_count = 0
+    import pdb; pdb.set_trace()
     for ind in range(0, len(request)):
         if val_count == 0 or val_count == 1:
             if request[ind] == " ":
@@ -75,6 +76,9 @@ def format_validation(request):
                 val_count += 1
             elif request[ind] == " ":
                 return False
+        else:
+            if request[ind] == "\r\n":
+                val_count += 1
     return True
 
 def check_for_space(ind, request, val_count):

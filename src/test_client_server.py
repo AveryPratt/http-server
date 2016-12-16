@@ -138,7 +138,7 @@ REQUESTS_RESPONSES = [
 def test_method_validation(status, req):
     """Tests to see if GET requests are valid and any other type of requests are invalid."""
     from server import method_validation
-    valid = method_validation(list(req))
+    valid = method_validation(req)
     if status == "method":
         valid = not valid
     assert valid
@@ -148,7 +148,7 @@ def test_method_validation(status, req):
 def test_version_validation(status, req):
     """Tests to see if GET requests are valid and any other type of requests are invalid."""
     from server import version_validation
-    valid = version_validation(list(req))
+    valid = version_validation(req)
     if status == "version":
         valid = not valid
     assert valid
@@ -158,7 +158,7 @@ def test_version_validation(status, req):
 def test_host_validation(status, req):
     """Tests to see if GET requests are valid and any other type of requests are invalid."""
     from server import host_validation
-    valid = host_validation(list(req))
+    valid = host_validation(req)
     if status == "host":
         valid = not valid
     assert valid
@@ -168,7 +168,7 @@ def test_host_validation(status, req):
 def test_format_validation(status, req):
     """Tests to see if GET requests are valid and any other type of requests are invalid."""
     from server import format_validation
-    valid = format_validation(list(req))
+    valid = format_validation(req)
     if status == "format":
         valid = not valid
     assert valid
