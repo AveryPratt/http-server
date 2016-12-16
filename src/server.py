@@ -69,7 +69,6 @@ def format_validation(request):
             if request[ind:ind + 2] == "\r\n":
                 val_count += 1
             elif request[ind] == " ":
-                # import pdb; pdb.set_trace()
                 return False
         elif val_count % 2 == 1:
             if request[ind] == ":":
@@ -80,12 +79,6 @@ def format_validation(request):
             if request[ind] == "\r\n":
                 val_count += 1
     return True
-
-def check_for_space(ind, request, val_count):
-    if request[ind] == " ":
-        val_count += 1
-    elif request[ind:ind + 1] == "\r\n":
-        return False, val_count
 
 
 def response_error(key):
