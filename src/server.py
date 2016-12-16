@@ -3,7 +3,7 @@
 
 import socket
 import sys
-
+import io
 
 def server(port):
     """Recieves a message from the client and echos it back."""
