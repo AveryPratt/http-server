@@ -23,6 +23,8 @@ def buffer_request(buffer_length, conn):
     while True:
         addition = conn.recv(buffer_length).decode('utf-8')
         req += addition
+        if addition == "$":
+            addition = ""
         if len(addition) < buffer_length:
             break
     return req
@@ -36,9 +38,9 @@ def parse_request(request):
         return response_error("host")
     elif not format_validation(request):
         return response_error("format")
-    resp = response_error("OK")
     uri = request.split(" ", 2)[1]
-    return resp + "\r\n\r\n" + resolve_uri(uri)
+    info = resolve_uri(uri)
+    return response_error("OK", info[0], info[1])
 
 
 def method_validation(request):
@@ -100,7 +102,7 @@ def resolve_uri(uri):
 
 
 
-def response_error(key):
+def response_error(key, body=None, content_type=None):
     """Returns a response for an error (or OK) specified by the key."""
     response_dict = {
         "OK": ("HTTP/1.1 200 OK\r\n" +
@@ -109,11 +111,10 @@ def response_error(key):
                     "Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\r\n" +
                     "Etag: '3f80f-1b6-3e1cb03b'\r\n" +
                     "Accept-Ranges:  none\r\n" +
-                    "Content-Length: 438\r\n" +
+                    "Content-Length: " + str(len(body)) + "\r\n" +
                     "Connection: close\r\n" +
-                    "Content-Type: text/html; charset=UTF-8\r\n" +
-                    "\r\n" +
-                    "<438 bytes of content>"),
+                    "Content-Type: " + content_type + "\r\n" +
+                    "\r\n" + body),
         "method": ("HTTP/1.1 405 Method Not Allowed\r\n" +
                     "Date: Mon, 23 May 2005 22:38:34 GMT\r\n" +
                     "Server: Apache/1.3.3.7 (Unix) (Red-Hat/Linux)\r\n" +
