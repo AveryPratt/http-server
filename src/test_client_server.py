@@ -76,21 +76,24 @@ GOOD_REQUESTS = [
         ("GET webroot/images/JPEG_example.jpg HTTP/1.1\r\n" +
         "Date: Mon, 27 Jul 1884 12:28:53 GMT\r\n" +
         "Server: Teddy Bear\r\n" +
-        "Host:  \r\n")
+        "Host:  \r\n"),
+        None
     ],
     [
         ".png",
         ("GET webroot/images/sample_1.png HTTP/1.1\r\n" +
         "Date: Mon, 27 Jul 1884 12:28:53 GMT\r\n" +
         "Server: Teddy Bear\r\n" +
-        "Host:  \r\n")
+        "Host:  \r\n"),
+        None
     ],
     [
         ".jpg",
         ("GET webroot/images/Sample_Scene_Balls.jpg HTTP/1.1\r\n" +
         "Date: Mon, 27 Jul 1884 12:28:53 GMT\r\n" +
         "Server: Teddy Bear\r\n" +
-        "Host:  \r\n")
+        "Host:  \r\n"),
+        None
     ],
 ]
 
@@ -266,20 +269,20 @@ def test_format_validation(status, req):
     assert valid
 
 
-# @pytest.mark.parametrize("file_type, req, body", GOOD_REQUESTS)
-# def test_format_validation(file_type, req, body):
-#     """Tests to see if file paths in request return correct files"""
-#     from server import parse_request
-#     assert parse_request(req) == ("HTTP/1.1 200 OK\r\n" +
-#                                 "Date: Mon, 23 May 2005 22:38:34 GMT\r\n" +
-#                                 "Server: Apache/1.3.3.7 (Unix) (Red-Hat/Linux)\r\n" +
-#                                 "Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\r\n" +
-#                                 "Etag: '3f80f-1b6-3e1cb03b'\r\n" +
-#                                 "Accept-Ranges:  none\r\n" +
-#                                 "Content-Length: " + str(len(body)) + "\r\n" +
-#                                 "Connection: close\r\n" +
-#                                 "Content-Type: " + file_type + "\r\n" +
-#                                 "\r\n" + body)
+@pytest.mark.parametrize("file_type, req, body", GOOD_REQUESTS)
+def test_format_validation(file_type, req, body):
+    """Tests to see if file paths in request return correct files"""
+    from server import parse_request
+    assert parse_request(req) == ("HTTP/1.1 200 OK\r\n" +
+                                "Date: Mon, 23 May 2005 22:38:34 GMT\r\n" +
+                                "Server: Apache/1.3.3.7 (Unix) (Red-Hat/Linux)\r\n" +
+                                "Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\r\n" +
+                                "Etag: '3f80f-1b6-3e1cb03b'\r\n" +
+                                "Accept-Ranges:  none\r\n" +
+                                "Content-Length: " + str(len(body)) + "\r\n" +
+                                "Connection: close\r\n" +
+                                "Content-Type: " + file_type + "\r\n" +
+                                "\r\n" + body)
 
 
 
