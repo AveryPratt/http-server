@@ -11,8 +11,8 @@ GOOD_REQUESTS = [
         "Date: Mon, 27 Jul 1884 12:28:53 GMT\r\n" +
         "Server: Teddy Bear\r\n" +
         "Host:  \r\n"),
-        ("<html><body><ul><li>a_web_page.html</li><li>images</li><li>" +
-        "make_time.py</li><li>sample.txt</li></ul></body></html>")
+        ("<html><body><ul><li>a_web_page.html</li><li>make_time.py</li>" +
+        "<li>images</li><li>sample.txt</li></ul></body></html>")
     ],
     [
         ".html",
@@ -20,16 +20,8 @@ GOOD_REQUESTS = [
         "Date: Mon, 27 Jul 1884 12:28:53 GMT\r\n" +
         "Server: Teddy Bear\r\n" +
         "Host:  \r\n"),
-        ("<!DOCTYPE html>" +
-        "<html>" +
-        "<body>" +
-
-        "<h1>Code Fellows</h1>" +
-
-        "<p>A fine place to learn Python web programming!</p>" +
-
-        "</body>" +
-        "</html>")
+        ("<!DOCTYPE html>\n<html>\n<body>\n\n<h1>Code Fellows</h1>\n\n<p>" +
+        "A fine place to learn Python web programming!</p>\n\n</body>\n</html>")
     ],
     [
         ".py",
@@ -37,28 +29,10 @@ GOOD_REQUESTS = [
         "Date: Mon, 27 Jul 1884 12:28:53 GMT\r\n" +
         "Server: Teddy Bear\r\n" +
         "Host:  \r\n"),
-        ('#!/usr/bin/env python' +
-
-        '"""' +
-        'make_time.py' +
-
-        'simple script that returns and HTML page with the current time' +
-        '"""' +
-
-        'import datetime' +
-
-        'time_str = datetime.datetime.now().isoformat()' +
-
-        'html = """' +
-        '<http>' +
-        '<body>' +
-        '<h2> The time is: </h2>' +
-        '<p> %s <p>' +
-        '</body>' +
-        '</http>' +
-        '""" % time_str' +
-
-        'print(html)')
+        ('#!/usr/bin/env python\n\n"""\nmake_time.py\n\nsimple script that returns and HTML page' +
+        ' with the current time\n"""\n\nimport datetime\n\ntime_str = ' +
+        'datetime.datetime.now().isoformat()\n\nhtml = """\n<http>\n<body>\n<h2> ' +
+        'The time is: </h2>\n<p> %s <p>\n</body>\n</http>\n""" % time_str\n\nprint(html)\n')
 
     ],
     [
@@ -67,9 +41,7 @@ GOOD_REQUESTS = [
         "Date: Mon, 27 Jul 1884 12:28:53 GMT\r\n" +
         "Server: Teddy Bear\r\n" +
         "Host:  \r\n"),
-        "This is a very simple text file."
-        "Just to show that we can serve it up."
-        "It is three lines long."
+        ("This is a very simple text file.\nJust to show that we can serve it up.\nIt is three lines long.")
     ],
     [
         ".JPEG",
@@ -273,6 +245,7 @@ def test_format_validation(status, req):
 def test_format_validation(file_type, req, body):
     """Tests to see if file paths in request return correct files"""
     from server import parse_request
+    print(req)
     assert parse_request(req) == ("HTTP/1.1 200 OK\r\n" +
                                 "Date: Mon, 23 May 2005 22:38:34 GMT\r\n" +
                                 "Server: Apache/1.3.3.7 (Unix) (Red-Hat/Linux)\r\n" +
@@ -283,7 +256,6 @@ def test_format_validation(file_type, req, body):
                                 "Connection: close\r\n" +
                                 "Content-Type: " + file_type + "\r\n" +
                                 "\r\n" + body)
-
 
 
 # uncomment below to run server tests

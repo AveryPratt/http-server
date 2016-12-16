@@ -16,6 +16,7 @@ def server(port):
     req = buffer_request(buffer_length, conn)
     print(req)
     conn.sendall(parse_request(req).encode('utf-8'))
+    # conn.shutdown()
     conn.close()
 
 def buffer_request(buffer_length, conn):
@@ -96,7 +97,10 @@ def resolve_uri(uri):
     else:
         ind = uri.index(".")
         content_type = uri[ind:]
-        fial = open(uri, "r")
+        if content_type == ".jpg" or content_type == ".png":
+            fial = io.open(uri, "rb")
+        else:
+            fial = io.open(uri, "r")
         body = fial.read()
     return body, content_type
 
