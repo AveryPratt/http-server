@@ -134,42 +134,41 @@ REQUESTS_RESPONSES = [
     ],
 ]
 
-@pytest.mark.parametrize("status, request", REQUESTS)
-def test_method_validation(status, request):
+@pytest.mark.parametrize("status, value", REQUESTS)
+def test_method_validation(status, value):
     """Tests to see if GET requests are valid and any other type of requests are invalid."""
-    import pdb; pdb.set_trace()
     from server import method_validation
-    valid = method_validation(list(request))
+    valid = method_validation(list(value))
     if status == "method":
         valid = not valid
     assert valid
 
 
-@pytest.mark.parametrize("status, request", REQUESTS)
-def test_version_validation(status, request):
+@pytest.mark.parametrize("status, value", REQUESTS)
+def test_version_validation(status, value):
     """Tests to see if GET requests are valid and any other type of requests are invalid."""
     from server import version_validation
-    valid = version_validation(list(request))
+    valid = version_validation(list(value))
     if status == "version":
         valid = not valid
     assert valid
 
 
-@pytest.mark.parametrize("status, request", REQUESTS)
-def test_host_validation(status, request):
+@pytest.mark.parametrize("status, value", REQUESTS)
+def test_host_validation(status, value):
     """Tests to see if GET requests are valid and any other type of requests are invalid."""
     from server import host_validation
-    valid = host_validation(list(request))
+    valid = host_validation(list(value))
     if status == "host":
         valid = not valid
     assert valid
 
 
-@pytest.mark.parametrize("status, request", REQUESTS)
-def test_format_validation(status, request):
+@pytest.mark.parametrize("status, value", REQUESTS)
+def test_format_validation(status, value):
     """Tests to see if GET requests are valid and any other type of requests are invalid."""
     from server import format_validation
-    valid = format_validation(list(request))
+    valid = format_validation(list(value))
     if status == "format":
         valid = not valid
     assert valid
