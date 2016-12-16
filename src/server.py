@@ -16,8 +16,8 @@ def server(port):
     req = buffer_request(buffer_length, conn)
     print(req)
     conn.sendall(parse_request(req).encode('utf-8'))
-    # conn.shutdown()
     conn.close()
+    # conn.shutdown()
 
 def buffer_request(buffer_length, conn):
     req = ""

@@ -2,6 +2,13 @@
 
 
 import pytest
+import io
+
+
+jpg_file_text = io.open('webroot/images/Sample_Scene_Balls.jpg', 'rb')
+jpg_file_read = jpg_file_text.read()
+png_file_text = io.open('webroot/images/sample_1.png', 'rb')
+png_file_read = png_file_text.read()
 
 
 GOOD_REQUESTS = [
@@ -11,8 +18,8 @@ GOOD_REQUESTS = [
         "Date: Mon, 27 Jul 1884 12:28:53 GMT\r\n" +
         "Server: Teddy Bear\r\n" +
         "Host:  \r\n"),
-        ("<html><body><ul><li>a_web_page.html</li><li>make_time.py</li>" +
-        "<li>images</li><li>sample.txt</li></ul></body></html>")
+        ("<html><body><ul><li>a_web_page.html</li><li>images</li><li>make_time.py</li>" +
+        "<li>sample.txt</li></ul></body></html>")
     ],
     [
         ".html",
@@ -44,20 +51,12 @@ GOOD_REQUESTS = [
         ("This is a very simple text file.\nJust to show that we can serve it up.\nIt is three lines long.")
     ],
     [
-        ".JPEG",
-        ("GET webroot/images/JPEG_example.jpg HTTP/1.1\r\n" +
-        "Date: Mon, 27 Jul 1884 12:28:53 GMT\r\n" +
-        "Server: Teddy Bear\r\n" +
-        "Host:  \r\n"),
-        None
-    ],
-    [
         ".png",
         ("GET webroot/images/sample_1.png HTTP/1.1\r\n" +
         "Date: Mon, 27 Jul 1884 12:28:53 GMT\r\n" +
         "Server: Teddy Bear\r\n" +
         "Host:  \r\n"),
-        None
+        png_file_read
     ],
     [
         ".jpg",
@@ -65,7 +64,7 @@ GOOD_REQUESTS = [
         "Date: Mon, 27 Jul 1884 12:28:53 GMT\r\n" +
         "Server: Teddy Bear\r\n" +
         "Host:  \r\n"),
-        None
+        jpg_file_read
     ],
 ]
 
@@ -242,10 +241,9 @@ def test_format_validation(status, req):
 
 
 @pytest.mark.parametrize("file_type, req, body", GOOD_REQUESTS)
-def test_format_validation(file_type, req, body):
+def test_check_ok_response(file_type, req, body):
     """Tests to see if file paths in request return correct files"""
     from server import parse_request
-    print(req)
     assert parse_request(req) == ("HTTP/1.1 200 OK\r\n" +
                                 "Date: Mon, 23 May 2005 22:38:34 GMT\r\n" +
                                 "Server: Apache/1.3.3.7 (Unix) (Red-Hat/Linux)\r\n" +
