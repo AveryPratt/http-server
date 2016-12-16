@@ -36,7 +36,9 @@ def parse_request(request):
         return response_error("host")
     elif not format_validation(request):
         return response_error("format")
-    return response_error("OK")
+    resp = response_error("OK")
+    uri = request.split(" ", 2)[1]
+    return resp + "\r\n\r\n" + resolve_uri(uri)
 
 
 def method_validation(request):
@@ -79,6 +81,25 @@ def format_validation(request):
             if request[ind] == "\r\n":
                 val_count += 1
     return True
+
+
+def resolve_uri(uri):
+    import io
+    import os
+    if "." not in uri:
+        content_type = ".dir"
+        fials = []
+        for each in os.walk(uri):
+            fials.append(each)
+        center = "</li><li>".join(fials)
+        body = "<html><body><ul><li>" + center + "</li></ul></body></html>"
+    else:
+        ind = uri.index(".")
+        content_type = uri[ind:]
+        fial = open(uri, "r")
+        body = fial.read()
+    return body, content_type
+
 
 
 def response_error(key):
