@@ -134,41 +134,41 @@ REQUESTS_RESPONSES = [
     ],
 ]
 
-@pytest.mark.parametrize("status, value", REQUESTS)
-def test_method_validation(status, value):
+@pytest.mark.parametrize("status, req", REQUESTS)
+def test_method_validation(status, req):
     """Tests to see if GET requests are valid and any other type of requests are invalid."""
     from server import method_validation
-    valid = method_validation(list(value))
+    valid = method_validation(list(req))
     if status == "method":
         valid = not valid
     assert valid
 
 
-@pytest.mark.parametrize("status, value", REQUESTS)
-def test_version_validation(status, value):
+@pytest.mark.parametrize("status, req", REQUESTS)
+def test_version_validation(status, req):
     """Tests to see if GET requests are valid and any other type of requests are invalid."""
     from server import version_validation
-    valid = version_validation(list(value))
+    valid = version_validation(list(req))
     if status == "version":
         valid = not valid
     assert valid
 
 
-@pytest.mark.parametrize("status, value", REQUESTS)
-def test_host_validation(status, value):
+@pytest.mark.parametrize("status, req", REQUESTS)
+def test_host_validation(status, req):
     """Tests to see if GET requests are valid and any other type of requests are invalid."""
     from server import host_validation
-    valid = host_validation(list(value))
+    valid = host_validation(list(req))
     if status == "host":
         valid = not valid
     assert valid
 
 
-@pytest.mark.parametrize("status, value", REQUESTS)
-def test_format_validation(status, value):
+@pytest.mark.parametrize("status, req", REQUESTS)
+def test_format_validation(status, req):
     """Tests to see if GET requests are valid and any other type of requests are invalid."""
     from server import format_validation
-    valid = format_validation(list(value))
+    valid = format_validation(list(req))
     if status == "format":
         valid = not valid
     assert valid

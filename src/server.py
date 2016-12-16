@@ -13,19 +13,19 @@ def server(port):
     server_socket.listen(1)
     conn, addr = server_socket.accept()
     buffer_length = 8
-    message_complete = False
-    response = ""
-    sent = False
-    while not message_complete:
-        addition = conn.recv(buffer_length).decode('utf-8')
-        response += addition
-        if len(addition) < buffer_length:
-            break
-    print(response)
-    if not sent:
-        conn.sendall(parse_request(response).encode('utf-8'))
+    req = buffer_request(buffer_length, conn)
+    print(req)
+    conn.sendall(parse_request(req).encode('utf-8'))
     conn.close()
 
+def buffer_request(buffer_length, conn):
+    req = ""
+    while True:
+        addition = conn.recv(buffer_length).decode('utf-8')
+        req += addition
+        if len(addition) < buffer_length:
+            break
+    return req
 
 def parse_request(request):
     if not method_validation(request):
@@ -40,7 +40,7 @@ def parse_request(request):
 
 
 def method_validation(request):
-    if request[0:3] != "GET ":
+    if request[0:4] != "GET ":
         return False
     return True
 
@@ -76,6 +76,12 @@ def format_validation(request):
             elif request[ind] == " ":
                 return False
     return True
+
+def check_for_space(ind, request, val_count):
+    if request[ind] == " ":
+        val_count += 1
+    elif request[ind:ind + 1] == "\r\n":
+        return False, val_count
 
 
 def response_error(key):
