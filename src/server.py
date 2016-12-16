@@ -88,9 +88,7 @@ def resolve_uri(uri):
     import os
     if "." not in uri:
         content_type = ".dir"
-        fials = []
-        for each in os.walk(uri):
-            fials.append(each)
+        fials = os.listdir(uri)
         center = "</li><li>".join(fials)
         body = "<html><body><ul><li>" + center + "</li></ul></body></html>"
     else:
