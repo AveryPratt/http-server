@@ -59,7 +59,6 @@ def host_validation(request):
 
 def format_validation(request):
     val_count = 0
-    import pdb; pdb.set_trace()
     for ind in range(0, len(request)):
         if val_count == 0 or val_count == 1:
             if request[ind] == " ":
@@ -67,9 +66,10 @@ def format_validation(request):
             elif request[ind:ind + 1] == "\r\n":
                 return False
         elif val_count == 2:
-            if request[ind:ind + 1] == "\r\n":
+            if request[ind:ind + 2] == "\r\n":
                 val_count += 1
             elif request[ind] == " ":
+                # import pdb; pdb.set_trace()
                 return False
         elif val_count % 2 == 1:
             if request[ind] == ":":
