@@ -1,21 +1,24 @@
-"""Server programmed to echo messages from client."""
+"""Recieves a message from the client and sends back one of the
+following responses with headers and a message body if the clients
+request is valid:
+
+200 OK: The client sends a valid request with a URI that exists.
+405 Method Not Allowed: The client does not send a GET request.
+403 Forbidden: The client sends a request with the wrong HTTP protocol.
+417 Expectation Failed: The client sends a request with a bad host.
+400 Bad Request: The client sends a request in an improper format.
+404 File Not Found: THe client sends a request for a file that does not exist.
+"""
 
 
 import socket
 import io
 
 def server(port):
-    """Recieves a message from the client and sends back one of the
-    following responses with headers and a message body if the clients
-    request is valid:
-    
-    200 OK: The client sends a valid request with a URI that exists.
-    405 Method Not Allowed: The client does not send a GET request.
-    403 Forbidden: The client sends a request with the wrong HTTP protocol.
-    417 Expectation Failed: The client sends a request with a bad host.
-    400 Bad Request: The client sends a request in an improper format.
-    404 File Not Found: THe client sends a request for a file that does not exist.
-    """
+    """Sets up a socket bound to an address and a port.
+    Listens for and accepts incoming client connections.
+    Processes client requests, builds an appropriate response,
+    and sends that response back to the client."""
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM, socket.IPPROTO_TCP)
     address = ("127.0.0.1", port)
     server_socket.bind(address)
@@ -30,7 +33,10 @@ def server(port):
 
 
 def buffer_request(buffer_length, conn):
-    """Docstring"""
+    """Recieves client requests. Returns a string of 
+    the client request plus a dollar sign.Removes a stray 
+    dollar sign from client messages evenly
+    divisible by eight."""
     req = ""
     while True:
         addition = conn.recv(buffer_length).decode('utf-8')
@@ -43,7 +49,8 @@ def buffer_request(buffer_length, conn):
 
 
 def parse_request(request):
-    """Docstring"""
+    """Takes the client's request as a parameter.
+    Returns the appropriate resopnse."""
     if not method_validation(request):
         return response_error("method")
     elif not version_validation(request):
@@ -61,7 +68,7 @@ def parse_request(request):
 
 
 def method_validation(request):
-    """Docstring"""
+    """"""
     if request[0:4] != "GET ":
         return False
     return True
@@ -129,7 +136,7 @@ def resolve_uri(uri):
 
 
 def response_error(key, body='', content_type=''):
-    """Returns a response for an error (or OK) specified by the key."""
+    """Returns the response for the error (or OK) specified by the key."""
     response_dict = {
         "OK": ("HTTP/1.1 200 OK\r\n" +
                     "Date: Mon, 23 May 2005 22:38:34 GMT\r\n" +

@@ -210,88 +210,51 @@ PARAM_404_Request = [
 ]
 
 
-# @pytest.mark.parametrize("status, req", REQUESTS)
-# def test_method_validation(status, req):
-#     """Tests to see if GET requests are valid and any other type of requests are invalid."""
-#     from server import method_validation
-#     valid = method_validation(req)
-#     if status == "method":
-#         valid = not valid
-#     assert valid
+@pytest.mark.parametrize("status, req", REQUESTS)
+def test_method_validation(status, req):
+    """Tests to see if GET requests are valid and any other type of requests are invalid."""
+    from server import method_validation
+    valid = method_validation(req)
+    if status == "method":
+        valid = not valid
+    assert valid
 
 
-# @pytest.mark.parametrize("status, req", REQUESTS)
-# def test_version_validation(status, req):
-#     """Tests to see if GET requests are valid and any other type of requests are invalid."""
-#     from server import version_validation
-#     valid = version_validation(req)
-#     if status == "version":
-#         valid = not valid
-#     assert valid
+@pytest.mark.parametrize("status, req", REQUESTS)
+def test_version_validation(status, req):
+    """Tests to see if GET requests are valid and any other type of requests are invalid."""
+    from server import version_validation
+    valid = version_validation(req)
+    if status == "version":
+        valid = not valid
+    assert valid
 
 
-# @pytest.mark.parametrize("status, req", REQUESTS)
-# def test_host_validation(status, req):
-#     """Tests to see if GET requests are valid and any other type of requests are invalid."""
-#     from server import host_validation
-#     valid = host_validation(req)
-#     if status == "host":
-#         valid = not valid
-#     assert valid
+@pytest.mark.parametrize("status, req", REQUESTS)
+def test_host_validation(status, req):
+    """Tests to see if GET requests are valid and any other type of requests are invalid."""
+    from server import host_validation
+    valid = host_validation(req)
+    if status == "host":
+        valid = not valid
+    assert valid
 
 
-# @pytest.mark.parametrize("status, req", REQUESTS)
-# def test_format_validation(status, req):
-#     """Tests to see if GET requests are valid and any other type of requests are invalid."""
-#     from server import format_validation
-#     valid = format_validation(req)
-#     if status == "format":
-#         valid = not valid
-#     assert valid
+@pytest.mark.parametrize("status, req", REQUESTS)
+def test_format_validation(status, req):
+    """Tests to see if GET requests are valid and any other type of requests are invalid."""
+    from server import format_validation
+    valid = format_validation(req)
+    if status == "format":
+        valid = not valid
+    assert valid
 
 
-# @pytest.mark.parametrize("file_type, req, body", GOOD_REQUESTS)
-# def test_check_ok_response(file_type, req, body):
-#     """Tests to see if file paths in request return correct files"""
-#     from server import parse_request
-#     assert parse_request(req) == ("HTTP/1.1 200 OK\r\n" +
-#                                 "Date: Mon, 23 May 2005 22:38:34 GMT\r\n" +
-#                                 "Server: Apache/1.3.3.7 (Unix) (Red-Hat/Linux)\r\n" +
-#                                 "Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\r\n" +
-#                                 "Etag: '3f80f-1b6-3e1cb03b'\r\n" +
-#                                 "Accept-Ranges:  none\r\n" +
-#                                 "Content-Length: " + str(len(body)) + "\r\n" +
-#                                 "Connection: close\r\n" +
-#                                 "Content-Type: " + file_type + "\r\n" +
-#                                 "\r\n" + body)
-
-
-# def test_check_404():
-#     """Tests to see if a request with a file not in the directory
-#     returns a 404 file not found response."""
-#     from server import parse_request
-#     assert parse_request("GET /teddy/bear.html HTTP/1.1\r\n" +
-#         "Date: Mon, 27 Jul 1884 12:28:53 GMT\r\n" +
-#         "Server: Teddy Bear\r\n" +
-#         "Host:  \r\n") == ("HTTP/1.1 404 File Not Found\r\n" +
-#                     "Date: Mon, 23 May 2005 22:38:34 GMT\r\n" +
-#                     "Server: Apache/1.3.3.7 (Unix) (Red-Hat/Linux)\r\n" +
-#                     "Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\r\n" +
-#                     "Etag: '3f80f-1b6-3e1cb03b'\r\n" +
-#                     "Accept-Ranges:  none\r\n" +
-#                     "Content-Length: 438\r\n" +
-#                     "Connection: close\r\n" +
-#                     "Content-Type: text/html; charset=UTF-8\r\n" +
-#                     "\r\n" +
-#                     "<438 bytes of content>")
-
-# uncomment below to run server tests
-
-@pytest.mark.parametrize('file_type, req, body', GOOD_REQUESTS)
-def test_response_ok(file_type, req, body):
-    """Tests to see if valid client request will return a 200 OK message."""
-    from client import client
-    assert client(req, 10000) == ("HTTP/1.1 200 OK\r\n" +
+@pytest.mark.parametrize("file_type, req, body", GOOD_REQUESTS)
+def test_check_ok_response(file_type, req, body):
+    """Tests to see if file paths in request return correct files"""
+    from server import parse_request
+    assert parse_request(req) == ("HTTP/1.1 200 OK\r\n" +
                                 "Date: Mon, 23 May 2005 22:38:34 GMT\r\n" +
                                 "Server: Apache/1.3.3.7 (Unix) (Red-Hat/Linux)\r\n" +
                                 "Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\r\n" +
@@ -301,6 +264,43 @@ def test_response_ok(file_type, req, body):
                                 "Connection: close\r\n" +
                                 "Content-Type: " + file_type + "\r\n" +
                                 "\r\n" + body)
+
+
+def test_check_404():
+    """Tests to see if a request with a file not in the directory
+    returns a 404 file not found response."""
+    from server import parse_request
+    assert parse_request("GET /teddy/bear.html HTTP/1.1\r\n" +
+        "Date: Mon, 27 Jul 1884 12:28:53 GMT\r\n" +
+        "Server: Teddy Bear\r\n" +
+        "Host:  \r\n") == ("HTTP/1.1 404 File Not Found\r\n" +
+                    "Date: Mon, 23 May 2005 22:38:34 GMT\r\n" +
+                    "Server: Apache/1.3.3.7 (Unix) (Red-Hat/Linux)\r\n" +
+                    "Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\r\n" +
+                    "Etag: '3f80f-1b6-3e1cb03b'\r\n" +
+                    "Accept-Ranges:  none\r\n" +
+                    "Content-Length: 438\r\n" +
+                    "Connection: close\r\n" +
+                    "Content-Type: text/html; charset=UTF-8\r\n" +
+                    "\r\n" +
+                    "<438 bytes of content>")
+
+# uncomment below to run server tests
+
+@pytest.mark.parametrize('file_type, req, body', GOOD_REQUESTS)
+def test_response_ok(file_type, req, body):
+    """Tests to see if valid client request will return a 200 OK message."""
+    from client import client
+    assert client(req, 10000) == ("HTTP/1.1 200 OK\r\n" +
+                            "Date: Mon, 23 May 2005 22:38:34 GMT\r\n" +
+                            "Server: Apache/1.3.3.7 (Unix) (Red-Hat/Linux)\r\n" +
+                            "Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\r\n" +
+                            "Etag: '3f80f-1b6-3e1cb03b'\r\n" +
+                            "Accept-Ranges:  none\r\n" +
+                            "Content-Length: " + str(len(body)) + "\r\n" +
+                            "Connection: close\r\n" +
+                            "Content-Type: " + file_type + "\r\n" +
+                            "\r\n" + body)
 
 
 # def test_response_failed():
