@@ -1,6 +1,3 @@
-
-
-
 """Recieves a message from the client and sends back one of the
 following responses with headers and a message body if the clients
 request is valid:
@@ -16,6 +13,7 @@ request is valid:
 
 import socket
 import io
+
 
 def server(socket, address):
     """Sets up a socket bound to an address and a port.
