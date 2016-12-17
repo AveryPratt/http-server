@@ -19,6 +19,7 @@ def server(port):
     conn.close()
     # conn.shutdown()
 
+
 def buffer_request(buffer_length, conn):
     req = ""
     while True:
@@ -30,6 +31,7 @@ def buffer_request(buffer_length, conn):
             break
     return req
 
+
 def parse_request(request):
     if not method_validation(request):
         return response_error("method")
@@ -39,8 +41,11 @@ def parse_request(request):
         return response_error("host")
     elif not format_validation(request):
         return response_error("format")
-    uri = request.split(" ", 2)[1]
-    info = resolve_uri(uri)
+    try:
+        uri = request.split(" ", 2)[1]
+        info = resolve_uri(uri)
+    except IOError:
+        return response_error("404")
     return response_error("OK", info[0], info[1])
 
 
@@ -48,6 +53,7 @@ def method_validation(request):
     if request[0:4] != "GET ":
         return False
     return True
+
 
 def version_validation(request):
     for ind in range(0, len(request)):
@@ -61,6 +67,7 @@ def host_validation(request):
         if request[ind:ind + 8] == "\r\nHost: ":
             return True
     return False
+
 
 def format_validation(request):
     val_count = 0
@@ -105,8 +112,7 @@ def resolve_uri(uri):
     return body, content_type
 
 
-
-def response_error(key, body=None, content_type=None):
+def response_error(key, body='', content_type=''):
     """Returns a response for an error (or OK) specified by the key."""
     response_dict = {
         "OK": ("HTTP/1.1 200 OK\r\n" +
@@ -118,7 +124,8 @@ def response_error(key, body=None, content_type=None):
                     "Content-Length: " + str(len(body)) + "\r\n" +
                     "Connection: close\r\n" +
                     "Content-Type: " + content_type + "\r\n" +
-                    "\r\n" + body),
+                    "\r\n" + body
+                    ),
         "method": ("HTTP/1.1 405 Method Not Allowed\r\n" +
                     "Date: Mon, 23 May 2005 22:38:34 GMT\r\n" +
                     "Server: Apache/1.3.3.7 (Unix) (Red-Hat/Linux)\r\n" +
@@ -163,6 +170,17 @@ def response_error(key, body=None, content_type=None):
                     "Content-Type: text/html; charset=UTF-8\r\n" +
                     "\r\n" +
                     "<438 bytes of content>"),
+        "404": ("HTTP/1.1 404 File Not Found\r\n" +
+                    "Date: Mon, 23 May 2005 22:38:34 GMT\r\n" +
+                    "Server: Apache/1.3.3.7 (Unix) (Red-Hat/Linux)\r\n" +
+                    "Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\r\n" +
+                    "Etag: '3f80f-1b6-3e1cb03b'\r\n" +
+                    "Accept-Ranges:  none\r\n" +
+                    "Content-Length: 438\r\n" +
+                    "Connection: close\r\n" +
+                    "Content-Type: text/html; charset=UTF-8\r\n" +
+                    "\r\n" +
+                    "<438 bytes of content>")
     }
     for each in response_dict:
         if key == each:
