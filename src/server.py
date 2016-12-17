@@ -2,11 +2,20 @@
 
 
 import socket
-import sys
 import io
 
 def server(port):
-    """Recieves a message from the client and echos it back."""
+    """Recieves a message from the client and sends back one of the
+    following responses with headers and a message body if the clients
+    request is valid:
+    
+    200 OK: The client sends a valid request with a URI that exists.
+    405 Method Not Allowed: The client does not send a GET request.
+    403 Forbidden: The client sends a request with the wrong HTTP protocol.
+    417 Expectation Failed: The client sends a request with a bad host.
+    400 Bad Request: The client sends a request in an improper format.
+    404 File Not Found: THe client sends a request for a file that does not exist.
+    """
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM, socket.IPPROTO_TCP)
     address = ("127.0.0.1", port)
     server_socket.bind(address)
@@ -21,6 +30,7 @@ def server(port):
 
 
 def buffer_request(buffer_length, conn):
+    """Docstring"""
     req = ""
     while True:
         addition = conn.recv(buffer_length).decode('utf-8')
@@ -33,6 +43,7 @@ def buffer_request(buffer_length, conn):
 
 
 def parse_request(request):
+    """Docstring"""
     if not method_validation(request):
         return response_error("method")
     elif not version_validation(request):
@@ -50,12 +61,14 @@ def parse_request(request):
 
 
 def method_validation(request):
+    """Docstring"""
     if request[0:4] != "GET ":
         return False
     return True
 
 
 def version_validation(request):
+    """Docstring"""
     for ind in range(0, len(request)):
         if request[ind:ind + 9] == " HTTP/1.1":
             return True
@@ -63,6 +76,7 @@ def version_validation(request):
 
 
 def host_validation(request):
+    """Docstring"""
     for ind in range(0, len(request)):
         if request[ind:ind + 8] == "\r\nHost: ":
             return True
@@ -70,6 +84,7 @@ def host_validation(request):
 
 
 def format_validation(request):
+    """Docstring"""
     val_count = 0
     for ind in range(0, len(request)):
         if val_count == 0 or val_count == 1:
@@ -94,6 +109,7 @@ def format_validation(request):
 
 
 def resolve_uri(uri):
+    """Docstring"""
     import io
     import os
     if "." not in uri:
