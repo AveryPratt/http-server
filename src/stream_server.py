@@ -138,29 +138,17 @@ def resolve_uri(uri):
 def response_error(key, body='', content_type=''):
     """Returns the response for the error (or OK) specified by the key."""
     response_dict = {
-        "OK": ("HTTP/1.1 200 OK\r\n" +
-                    "Date: Mon, 23 May 2005 22:38:34 GMT\r\n" +
-                    "Server: Apache/1.3.3.7 (Unix) (Red-Hat/Linux)\r\n" +
-                    "Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\r\n" +
-                    "Etag: '3f80f-1b6-3e1cb03b'\r\n" +
-                    "Accept-Ranges:  none\r\n" +
-                    "Content-Length: " + str(len(body)) + "\r\n" +
-                    "Connection: close\r\n" +
-                    "Content-Type: " + content_type + "\r\n" +
-                    "\r\n" + body
-                    ),
-        "method": ("HTTP/1.1 405 Method Not Allowed\r\n" +
-                    "Date: Mon, 23 May 2005 22:38:34 GMT\r\n" +
-                    "Server: Apache/1.3.3.7 (Unix) (Red-Hat/Linux)\r\n" +
-                    "Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\r\n" +
-                    "Etag: '3f80f-1b6-3e1cb03b'\r\n" +
-                    "Accept-Ranges:  none\r\n" +
-                    "Content-Length: 438\r\n" +
-                    "Connection: close\r\n" +
-                    "Content-Type: text/html; charset=UTF-8\r\n" +
-                    "\r\n" +
-                    "<438 bytes of content>"),
-        "version": ("HTTP/1.1 403 Forbidden\r\n" +
+        "OK": (("HTTP/1.1 200 OK\r\n" +
+                "Date: Mon, 23 May 2005 22:38:34 GMT\r\n" +
+                "Server: Apache/1.3.3.7 (Unix) (Red-Hat/Linux)\r\n" +
+                "Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\r\n" +
+                "Etag: '3f80f-1b6-3e1cb03b'\r\n" +
+                "Accept-Ranges:  none\r\n" +
+                "Content-Length: " + str(len(body)) + "\r\n" +
+                "Connection: close\r\n" +
+                "Content-Type: " + content_type + "\r\n" +
+                "\r\n"), body),
+        "method": (("HTTP/1.1 405 Method Not Allowed\r\n" +
                     "Date: Mon, 23 May 2005 22:38:34 GMT\r\n" +
                     "Server: Apache/1.3.3.7 (Unix) (Red-Hat/Linux)\r\n" +
                     "Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\r\n" +
@@ -169,9 +157,28 @@ def response_error(key, body='', content_type=''):
                     "Content-Length: 438\r\n" +
                     "Connection: close\r\n" +
                     "Content-Type: text/html; charset=UTF-8\r\n" +
-                    "\r\n" +
-                    "<438 bytes of content>"),
-        "host": ("HTTP/1.1 417 Expectation Failed\r\n" +
+                    "\r\n"), "<438 bytes of content>"),
+        "version": (("HTTP/1.1 403 Forbidden\r\n" +
+                     "Date: Mon, 23 May 2005 22:38:34 GMT\r\n" +
+                     "Server: Apache/1.3.3.7 (Unix) (Red-Hat/Linux)\r\n" +
+                     "Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\r\n" +
+                     "Etag: '3f80f-1b6-3e1cb03b'\r\n" +
+                     "Accept-Ranges:  none\r\n" +
+                     "Content-Length: 438\r\n" +
+                     "Connection: close\r\n" +
+                     "Content-Type: text/html; charset=UTF-8\r\n" +
+                     "\r\n"), "<438 bytes of content>"),
+        "host": (("HTTP/1.1 417 Expectation Failed\r\n" +
+                  "Date: Mon, 23 May 2005 22:38:34 GMT\r\n" +
+                  "Server: Apache/1.3.3.7 (Unix) (Red-Hat/Linux)\r\n" +
+                  "Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\r\n" +
+                  "Etag: '3f80f-1b6-3e1cb03b'\r\n" +
+                  "Accept-Ranges:  none\r\n" +
+                  "Content-Length: 438\r\n" +
+                  "Connection: close\r\n" +
+                  "Content-Type: text/html; charset=UTF-8\r\n" +
+                  "\r\n"), "<438 bytes of content>"),
+        "format": (("HTTP/1.1 400 Bad Request\r\n" +
                     "Date: Mon, 23 May 2005 22:38:34 GMT\r\n" +
                     "Server: Apache/1.3.3.7 (Unix) (Red-Hat/Linux)\r\n" +
                     "Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\r\n" +
@@ -180,41 +187,19 @@ def response_error(key, body='', content_type=''):
                     "Content-Length: 438\r\n" +
                     "Connection: close\r\n" +
                     "Content-Type: text/html; charset=UTF-8\r\n" +
-                    "\r\n" +
-                    "<438 bytes of content>"),
-        "format": ("HTTP/1.1 400 Bad Request\r\n" +
-                    "Date: Mon, 23 May 2005 22:38:34 GMT\r\n" +
-                    "Server: Apache/1.3.3.7 (Unix) (Red-Hat/Linux)\r\n" +
-                    "Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\r\n" +
-                    "Etag: '3f80f-1b6-3e1cb03b'\r\n" +
-                    "Accept-Ranges:  none\r\n" +
-                    "Content-Length: 438\r\n" +
-                    "Connection: close\r\n" +
-                    "Content-Type: text/html; charset=UTF-8\r\n" +
-                    "\r\n" +
-                    "<438 bytes of content>"),
-        "404": ("HTTP/1.1 404 File Not Found\r\n" +
-                    "Date: Mon, 23 May 2005 22:38:34 GMT\r\n" +
-                    "Server: Apache/1.3.3.7 (Unix) (Red-Hat/Linux)\r\n" +
-                    "Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\r\n" +
-                    "Etag: '3f80f-1b6-3e1cb03b'\r\n" +
-                    "Accept-Ranges:  none\r\n" +
-                    "Content-Length: 438\r\n" +
-                    "Connection: close\r\n" +
-                    "Content-Type: text/html; charset=UTF-8\r\n" +
-                    "\r\n" +
-                    "<438 bytes of content>")
+                    "\r\n"), "<438 bytes of content>"),
+        "404": (("HTTP/1.1 404 File Not Found\r\n" +
+                 "Date: Mon, 23 May 2005 22:38:34 GMT\r\n" +
+                 "Server: Apache/1.3.3.7 (Unix) (Red-Hat/Linux)\r\n" +
+                 "Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\r\n" +
+                 "Etag: '3f80f-1b6-3e1cb03b'\r\n" +
+                 "Accept-Ranges:  none\r\n" +
+                 "Content-Length: 438\r\n" +
+                 "Connection: close\r\n" +
+                 "Content-Type: text/html; charset=UTF-8\r\n" +
+                 "\r\n"), "<438 bytes of content>"),
     }
     for each in response_dict:
         if key == each:
             return response_dict[key]
     return response_dict["format"]
-
-
-if __name__ == '__main__':
-    from gevent.server import StreamServer
-    from gevent.monkey import patch_all
-    patch_all()
-    server_forever = StreamServer(('127.0.0.1', 10000), server)
-    print('Starting teddy bear server on port 10000')
-    server_forever.serve_forever()

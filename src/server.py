@@ -27,7 +27,11 @@ def server(port):
     buffer_length = 8
     req = buffer_request(buffer_length, conn)
     print(req)
-    conn.sendall(parse_request(req).encode('utf-8'))
+    response = parse_request(req)
+    response[0] = response[0].encode("utf-8")
+    if "Content-Type: .jpg" not in response[1] and "Content-Type: .png" not in response[1]:
+        response[1] = response[1].encode("utf-8")
+    conn.sendall(response[0] + response[1])
     conn.close()
     # conn.shutdown()
 
@@ -68,14 +72,14 @@ def parse_request(request):
 
 
 def method_validation(request):
-    """"""
+    """Determines if request is a GET request."""
     if request[0:4] != "GET ":
         return False
     return True
 
 
 def version_validation(request):
-    """Docstring"""
+    """Determines if request uses the right version of HTTP (1.1)"""
     for ind in range(0, len(request)):
         if request[ind:ind + 9] == " HTTP/1.1":
             return True
@@ -83,7 +87,7 @@ def version_validation(request):
 
 
 def host_validation(request):
-    """Docstring"""
+    """Determines if 'Host' header exists."""
     for ind in range(0, len(request)):
         if request[ind:ind + 8] == "\r\nHost: ":
             return True
@@ -91,7 +95,7 @@ def host_validation(request):
 
 
 def format_validation(request):
-    """Docstring"""
+    """Determines if request is formatted correctly."""
     val_count = 0
     for ind in range(0, len(request)):
         if val_count == 0 or val_count == 1:
@@ -117,11 +121,11 @@ def format_validation(request):
 
 def resolve_uri(uri):
     """Docstring"""
-    import io
     import os
     if "." not in uri:
         content_type = ".dir"
         fials = os.listdir(uri)
+        fials = fials.sort()
         center = "</li><li>".join(fials)
         body = "<html><body><ul><li>" + center + "</li></ul></body></html>"
     else:
@@ -138,29 +142,17 @@ def resolve_uri(uri):
 def response_error(key, body='', content_type=''):
     """Returns the response for the error (or OK) specified by the key."""
     response_dict = {
-        "OK": ("HTTP/1.1 200 OK\r\n" +
-                    "Date: Mon, 23 May 2005 22:38:34 GMT\r\n" +
-                    "Server: Apache/1.3.3.7 (Unix) (Red-Hat/Linux)\r\n" +
-                    "Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\r\n" +
-                    "Etag: '3f80f-1b6-3e1cb03b'\r\n" +
-                    "Accept-Ranges:  none\r\n" +
-                    "Content-Length: " + str(len(body)) + "\r\n" +
-                    "Connection: close\r\n" +
-                    "Content-Type: " + content_type + "\r\n" +
-                    "\r\n" + body
-                    ),
-        "method": ("HTTP/1.1 405 Method Not Allowed\r\n" +
-                    "Date: Mon, 23 May 2005 22:38:34 GMT\r\n" +
-                    "Server: Apache/1.3.3.7 (Unix) (Red-Hat/Linux)\r\n" +
-                    "Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\r\n" +
-                    "Etag: '3f80f-1b6-3e1cb03b'\r\n" +
-                    "Accept-Ranges:  none\r\n" +
-                    "Content-Length: 438\r\n" +
-                    "Connection: close\r\n" +
-                    "Content-Type: text/html; charset=UTF-8\r\n" +
-                    "\r\n" +
-                    "<438 bytes of content>"),
-        "version": ("HTTP/1.1 403 Forbidden\r\n" +
+        "OK": (("HTTP/1.1 200 OK\r\n" +
+                "Date: Mon, 23 May 2005 22:38:34 GMT\r\n" +
+                "Server: Apache/1.3.3.7 (Unix) (Red-Hat/Linux)\r\n" +
+                "Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\r\n" +
+                "Etag: '3f80f-1b6-3e1cb03b'\r\n" +
+                "Accept-Ranges:  none\r\n" +
+                "Content-Length: " + str(len(body)) + "\r\n" +
+                "Connection: close\r\n" +
+                "Content-Type: " + content_type + "\r\n" +
+                "\r\n"), body),
+        "method": (("HTTP/1.1 405 Method Not Allowed\r\n" +
                     "Date: Mon, 23 May 2005 22:38:34 GMT\r\n" +
                     "Server: Apache/1.3.3.7 (Unix) (Red-Hat/Linux)\r\n" +
                     "Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\r\n" +
@@ -169,9 +161,28 @@ def response_error(key, body='', content_type=''):
                     "Content-Length: 438\r\n" +
                     "Connection: close\r\n" +
                     "Content-Type: text/html; charset=UTF-8\r\n" +
-                    "\r\n" +
-                    "<438 bytes of content>"),
-        "host": ("HTTP/1.1 417 Expectation Failed\r\n" +
+                    "\r\n"), "<438 bytes of content>"),
+        "version": (("HTTP/1.1 403 Forbidden\r\n" +
+                     "Date: Mon, 23 May 2005 22:38:34 GMT\r\n" +
+                     "Server: Apache/1.3.3.7 (Unix) (Red-Hat/Linux)\r\n" +
+                     "Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\r\n" +
+                     "Etag: '3f80f-1b6-3e1cb03b'\r\n" +
+                     "Accept-Ranges:  none\r\n" +
+                     "Content-Length: 438\r\n" +
+                     "Connection: close\r\n" +
+                     "Content-Type: text/html; charset=UTF-8\r\n" +
+                     "\r\n"), "<438 bytes of content>"),
+        "host": (("HTTP/1.1 417 Expectation Failed\r\n" +
+                  "Date: Mon, 23 May 2005 22:38:34 GMT\r\n" +
+                  "Server: Apache/1.3.3.7 (Unix) (Red-Hat/Linux)\r\n" +
+                  "Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\r\n" +
+                  "Etag: '3f80f-1b6-3e1cb03b'\r\n" +
+                  "Accept-Ranges:  none\r\n" +
+                  "Content-Length: 438\r\n" +
+                  "Connection: close\r\n" +
+                  "Content-Type: text/html; charset=UTF-8\r\n" +
+                  "\r\n"), "<438 bytes of content>"),
+        "format": (("HTTP/1.1 400 Bad Request\r\n" +
                     "Date: Mon, 23 May 2005 22:38:34 GMT\r\n" +
                     "Server: Apache/1.3.3.7 (Unix) (Red-Hat/Linux)\r\n" +
                     "Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\r\n" +
@@ -180,30 +191,17 @@ def response_error(key, body='', content_type=''):
                     "Content-Length: 438\r\n" +
                     "Connection: close\r\n" +
                     "Content-Type: text/html; charset=UTF-8\r\n" +
-                    "\r\n" +
-                    "<438 bytes of content>"),
-        "format": ("HTTP/1.1 400 Bad Request\r\n" +
-                    "Date: Mon, 23 May 2005 22:38:34 GMT\r\n" +
-                    "Server: Apache/1.3.3.7 (Unix) (Red-Hat/Linux)\r\n" +
-                    "Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\r\n" +
-                    "Etag: '3f80f-1b6-3e1cb03b'\r\n" +
-                    "Accept-Ranges:  none\r\n" +
-                    "Content-Length: 438\r\n" +
-                    "Connection: close\r\n" +
-                    "Content-Type: text/html; charset=UTF-8\r\n" +
-                    "\r\n" +
-                    "<438 bytes of content>"),
-        "404": ("HTTP/1.1 404 File Not Found\r\n" +
-                    "Date: Mon, 23 May 2005 22:38:34 GMT\r\n" +
-                    "Server: Apache/1.3.3.7 (Unix) (Red-Hat/Linux)\r\n" +
-                    "Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\r\n" +
-                    "Etag: '3f80f-1b6-3e1cb03b'\r\n" +
-                    "Accept-Ranges:  none\r\n" +
-                    "Content-Length: 438\r\n" +
-                    "Connection: close\r\n" +
-                    "Content-Type: text/html; charset=UTF-8\r\n" +
-                    "\r\n" +
-                    "<438 bytes of content>")
+                    "\r\n"), "<438 bytes of content>"),
+        "404": (("HTTP/1.1 404 File Not Found\r\n" +
+                 "Date: Mon, 23 May 2005 22:38:34 GMT\r\n" +
+                 "Server: Apache/1.3.3.7 (Unix) (Red-Hat/Linux)\r\n" +
+                 "Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\r\n" +
+                 "Etag: '3f80f-1b6-3e1cb03b'\r\n" +
+                 "Accept-Ranges:  none\r\n" +
+                 "Content-Length: 438\r\n" +
+                 "Connection: close\r\n" +
+                 "Content-Type: text/html; charset=UTF-8\r\n" +
+                 "\r\n"), "<438 bytes of content>"),
     }
     for each in response_dict:
         if key == each:
