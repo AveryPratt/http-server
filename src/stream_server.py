@@ -14,32 +14,32 @@ request is valid:
 import socket
 import io
 
-def server(port):
+
+def server(socket, address):
     """Sets up a socket bound to an address and a port.
     Listens for and accepts incoming client connections.
     Processes client requests, builds an appropriate response,
     and sends that response back to the client."""
-    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM, socket.IPPROTO_TCP)
-    address = ("127.0.0.1", port)
-    server_socket.bind(address)
-    server_socket.listen(1)
-    conn, addr = server_socket.accept()
+    # server_socket = socket
+    # server_socket.bind(address)
+    # server_socket.listen(1)
+    # conn, addr = server_socket.accept()
     buffer_length = 8
-    req = buffer_request(buffer_length, conn)
-    print(req)
-    conn.sendall(parse_request(req).encode('utf-8'))
-    conn.close()
+    req = buffer_request(buffer_length, socket)
+    # print(req)
+    socket.sendall(parse_request(req).encode('utf-8'))
+    socket.close()
     # conn.shutdown()
 
 
-def buffer_request(buffer_length, conn):
+def buffer_request(buffer_length, socket):
     """Recieves client requests. Returns a string of 
     the client request plus a dollar sign.Removes a stray 
     dollar sign from client messages evenly
     divisible by eight."""
     req = ""
     while True:
-        addition = conn.recv(buffer_length).decode('utf-8')
+        addition = socket.recv(buffer_length).decode('utf-8')
         req += addition
         if addition == "$":
             addition = ""
@@ -209,3 +209,12 @@ def response_error(key, body='', content_type=''):
         if key == each:
             return response_dict[key]
     return response_dict["format"]
+
+
+if __name__ == '__main__':
+    from gevent.server import StreamServer
+    from gevent.monkey import patch_all
+    patch_all()
+    server_forever = StreamServer(('127.0.0.1', 10000), server)
+    print('Starting teddy bear server on port 10000')
+    server_forever.serve_forever()
