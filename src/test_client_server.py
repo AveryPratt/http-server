@@ -41,22 +41,22 @@ GOOD_REQUESTS = [
         "Host:  \r\n"),
         ("This is a very simple text file.\nJust to show that we can serve it up.\nIt is three lines long.")
     ],
-    # [
-    #     ".png",
-    #     ("GET webroot/images/sample_1.png HTTP/1.1\r\n" +
-    #     "Date: Mon, 27 Jul 1884 12:28:53 GMT\r\n" +
-    #     "Server: Teddy Bear\r\n" +
-    #     "Host:  \r\n"),
-    #     png_file_read
-    # ],
-    # [
-    #     ".jpg",
-    #     ("GET webroot/images/Sample_Scene_Balls.jpg HTTP/1.1\r\n" +
-    #     "Date: Mon, 27 Jul 1884 12:28:53 GMT\r\n" +
-    #     "Server: Teddy Bear\r\n" +
-    #     "Host:  \r\n"),
-    #     jpg_file_read
-    # ],
+    [
+        ".png",
+        ("GET webroot/images/sample_1.png HTTP/1.1\r\n" +
+        "Date: Mon, 27 Jul 1884 12:28:53 GMT\r\n" +
+        "Server: Teddy Bear\r\n" +
+        "Host:  \r\n"),
+        png_file_read
+    ],
+    [
+        ".jpg",
+        ("GET webroot/images/Sample_Scene_Balls.jpg HTTP/1.1\r\n" +
+        "Date: Mon, 27 Jul 1884 12:28:53 GMT\r\n" +
+        "Server: Teddy Bear\r\n" +
+        "Host:  \r\n"),
+        jpg_file_read
+    ],
 ]
 
 
@@ -242,9 +242,12 @@ def test_format_validation(status, req):
 
 
 @pytest.mark.parametrize("file_type, req, body", GOOD_REQUESTS)
-def test_check_ok_response(file_type, req, body):
+def test_check_ok_response1(file_type, req, body):
     """Tests to see if file paths in request return correct files"""
     from stream_server import parse_request
+    if file_type != ".png" and file_type != ".jpg":
+    # if "image" not in file_type:
+        body = body.encode("utf-8")
     assert parse_request(req) == ("HTTP/1.1 200 OK\r\n" +
                                 "Date: Mon, 23 May 2005 22:38:34 GMT\r\n" +
                                 "Server: Apache/1.3.3.7 (Unix) (Red-Hat/Linux)\r\n" +
@@ -254,9 +257,10 @@ def test_check_ok_response(file_type, req, body):
                                 "Content-Length: " + str(len(body)) + "\r\n" +
                                 "Connection: close\r\n" +
                                 "Content-Type: " + file_type + "\r\n" +
-                                "\r\n" + body)
+                                "\r\n").encode('utf-8') + body
 
-def test_check_ok_response():
+
+def test_check_ok_response2():
     """Tests to see if file paths in request return correct files"""
     from stream_server import parse_request
 
@@ -268,41 +272,41 @@ def test_check_ok_response():
     assert '<li>a_web_page.html</li>' in body.decode("utf-8") and "<li>images</li>" in body.decode("utf-8") and "<li>make_time.py</li>" in body.decode("utf-8") and "<li>sample.txt</li>" in body.decode("utf-8")
 
 
-# def test_check_404():
-#     """Tests to see if a request with a file not in the directory
-#     returns a 404 file not found response."""
-#     from stream_server import parse_request
-#     assert parse_request("GET /teddy/bear.html HTTP/1.1\r\n" +
-#         "Date: Mon, 27 Jul 1884 12:28:53 GMT\r\n" +
-#         "Server: Teddy Bear\r\n" +
-#         "Host:  \r\n") == ("HTTP/1.1 404 File Not Found\r\n" +
-#                     "Date: Mon, 23 May 2005 22:38:34 GMT\r\n" +
-#                     "Server: Apache/1.3.3.7 (Unix) (Red-Hat/Linux)\r\n" +
-#                     "Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\r\n" +
-#                     "Etag: '3f80f-1b6-3e1cb03b'\r\n" +
-#                     "Accept-Ranges:  none\r\n" +
-#                     "Content-Length: 438\r\n" +
-#                     "Connection: close\r\n" +
-#                     "Content-Type: text/html; charset=UTF-8\r\n" +
-#                     "\r\n" +
-#                     "<438 bytes of content>")
+def test_check_404():
+    """Tests to see if a request with a file not in the directory
+    returns a 404 file not found response."""
+    from stream_server import parse_request
+    assert parse_request("GET /teddy/bear.html HTTP/1.1\r\n" +
+        "Date: Mon, 27 Jul 1884 12:28:53 GMT\r\n" +
+        "Server: Teddy Bear\r\n" +
+        "Host:  \r\n") == ("HTTP/1.1 404 File Not Found\r\n" +
+                    "Date: Mon, 23 May 2005 22:38:34 GMT\r\n" +
+                    "Server: Apache/1.3.3.7 (Unix) (Red-Hat/Linux)\r\n" +
+                    "Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\r\n" +
+                    "Etag: '3f80f-1b6-3e1cb03b'\r\n" +
+                    "Accept-Ranges:  none\r\n" +
+                    "Content-Length: 438\r\n" +
+                    "Connection: close\r\n" +
+                    "Content-Type: text/html; charset=UTF-8\r\n" +
+                    "\r\n" +
+                    "<438 bytes of content>")
 
 # # uncomment below to run server tests
 
-@pytest.mark.parametrize('file_type, req, body', GOOD_REQUESTS)
-def test_response_ok(file_type, req, body):
-    """Tests to see if valid client request will return a 200 OK message."""
-    from client import client
-    assert client(req, 10000) == ("HTTP/1.1 200 OK\r\n" +
-                            "Date: Mon, 23 May 2005 22:38:34 GMT\r\n" +
-                            "Server: Apache/1.3.3.7 (Unix) (Red-Hat/Linux)\r\n" +
-                            "Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\r\n" +
-                            "Etag: '3f80f-1b6-3e1cb03b'\r\n" +
-                            "Accept-Ranges:  none\r\n" +
-                            "Content-Length: " + str(len(body)) + "\r\n" +
-                            "Connection: close\r\n" +
-                            "Content-Type: " + file_type + "\r\n" +
-                            "\r\n" + body)
+# @pytest.mark.parametrize('file_type, req, body', GOOD_REQUESTS)
+# def test_response_ok(file_type, req, body):
+#     """Tests to see if valid client request will return a 200 OK message."""
+#     from client import client
+#     assert ("HTTP/1.1 200 OK\r\n" +
+#             "Date: Mon, 23 May 2005 22:38:34 GMT\r\n" +
+#             "Server: Apache/1.3.3.7 (Unix) (Red-Hat/Linux)\r\n" +
+#             "Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\r\n" +
+#             "Etag: '3f80f-1b6-3e1cb03b'\r\n" +
+#             "Accept-Ranges:  none\r\n" +
+#             "Content-Length: " + str(len(body)) + "\r\n" +
+#             "Connection: close\r\n" +
+#             "Content-Type: " + file_type + "\r\n" +
+#             "\r\n") in client(req, 10000)
 
 
 def test_response_failed():
