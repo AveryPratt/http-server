@@ -214,7 +214,7 @@ PARAM_404_Request = [
 @pytest.mark.parametrize("status, req", REQUESTS)
 def test_method_validation(status, req):
     """Tests to see if GET requests are valid and any other type of requests are invalid."""
-    from strea_server import method_validation
+    from stream_server import method_validation
     valid = method_validation(req)
     if status == "method":
         valid = not valid
@@ -224,7 +224,7 @@ def test_method_validation(status, req):
 @pytest.mark.parametrize("status, req", REQUESTS)
 def test_version_validation(status, req):
     """Tests to see if GET requests are valid and any other type of requests are invalid."""
-    from strea_server import version_validation
+    from stream_server import version_validation
     valid = version_validation(req)
     if status == "version":
         valid = not valid
@@ -234,7 +234,7 @@ def test_version_validation(status, req):
 @pytest.mark.parametrize("status, req", REQUESTS)
 def test_host_validation(status, req):
     """Tests to see if GET requests are valid and any other type of requests are invalid."""
-    from strea_server import host_validation
+    from stream_server import host_validation
     valid = host_validation(req)
     if status == "host":
         valid = not valid
@@ -244,7 +244,7 @@ def test_host_validation(status, req):
 @pytest.mark.parametrize("status, req", REQUESTS)
 def test_format_validation(status, req):
     """Tests to see if GET requests are valid and any other type of requests are invalid."""
-    from strea_server import format_validation
+    from stream_server import format_validation
     valid = format_validation(req)
     if status == "format":
         valid = not valid
@@ -254,7 +254,7 @@ def test_format_validation(status, req):
 @pytest.mark.parametrize("file_type, req, body", GOOD_REQUESTS)
 def test_check_ok_response(file_type, req, body):
     """Tests to see if file paths in request return correct files"""
-    from strea_server import parse_request
+    from stream_server import parse_request
     assert parse_request(req) == ("HTTP/1.1 200 OK\r\n" +
                                 "Date: Mon, 23 May 2005 22:38:34 GMT\r\n" +
                                 "Server: Apache/1.3.3.7 (Unix) (Red-Hat/Linux)\r\n" +
@@ -270,7 +270,7 @@ def test_check_ok_response(file_type, req, body):
 def test_check_404():
     """Tests to see if a request with a file not in the directory
     returns a 404 file not found response."""
-    from strea_server import parse_request
+    from stream_server import parse_request
     assert parse_request("GET /teddy/bear.html HTTP/1.1\r\n" +
         "Date: Mon, 27 Jul 1884 12:28:53 GMT\r\n" +
         "Server: Teddy Bear\r\n" +
