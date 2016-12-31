@@ -27,7 +27,7 @@ def server(socket, address):
     buffer_length = 8
     req = buffer_request(buffer_length, socket)
     # print(req)
-    socket.sendall(parse_request(req).encode('utf-8'))
+    socket.sendall(parse_request(req))
     socket.close()
     # conn.shutdown()
 
@@ -138,6 +138,8 @@ def resolve_uri(uri):
 
 def response_error(key, body='', content_type=''):
     """Returns the response for the error (or OK) specified by the key."""
+    if content_type != ".jpg" and content_type != ".png":
+        body = body.encode("utf-8")
     response_dict = {
         "OK": ("HTTP/1.1 200 OK\r\n" +
                     "Date: Mon, 23 May 2005 22:38:34 GMT\r\n" +
@@ -148,8 +150,8 @@ def response_error(key, body='', content_type=''):
                     "Content-Length: " + str(len(body)) + "\r\n" +
                     "Connection: close\r\n" +
                     "Content-Type: " + content_type + "\r\n" +
-                    "\r\n" + body
-                    ),
+                    "\r\n"
+                    ).encode("utf-8") + body,
         "method": ("HTTP/1.1 405 Method Not Allowed\r\n" +
                     "Date: Mon, 23 May 2005 22:38:34 GMT\r\n" +
                     "Server: Apache/1.3.3.7 (Unix) (Red-Hat/Linux)\r\n" +

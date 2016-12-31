@@ -265,7 +265,7 @@ def test_check_ok_response():
         "Server: Teddy Bear\r\n" +
         "Host:  \r\n"))
 
-    assert '<li>a_web_page.html</li>' in body and "<li>images</li>" in body and "<li>make_time.py</li>" in body and "<li>sample.txt</li>" in body
+    assert '<li>a_web_page.html</li>' in body.decode("utf-8") and "<li>images</li>" in body.decode("utf-8") and "<li>make_time.py</li>" in body.decode("utf-8") and "<li>sample.txt</li>" in body.decode("utf-8")
 
 
 # def test_check_404():
@@ -289,23 +289,33 @@ def test_check_ok_response():
 
 # # uncomment below to run server tests
 
-# @pytest.mark.parametrize('file_type, req, body', GOOD_REQUESTS)
-# def test_response_ok(file_type, req, body):
-#     """Tests to see if valid client request will return a 200 OK message."""
-#     from client import client
-#     assert client(req, 10000) == ("HTTP/1.1 200 OK\r\n" +
-#                             "Date: Mon, 23 May 2005 22:38:34 GMT\r\n" +
-#                             "Server: Apache/1.3.3.7 (Unix) (Red-Hat/Linux)\r\n" +
-#                             "Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\r\n" +
-#                             "Etag: '3f80f-1b6-3e1cb03b'\r\n" +
-#                             "Accept-Ranges:  none\r\n" +
-#                             "Content-Length: " + str(len(body)) + "\r\n" +
-#                             "Connection: close\r\n" +
-#                             "Content-Type: " + file_type + "\r\n" +
-#                             "\r\n" + body)
+@pytest.mark.parametrize('file_type, req, body', GOOD_REQUESTS)
+def test_response_ok(file_type, req, body):
+    """Tests to see if valid client request will return a 200 OK message."""
+    from client import client
+    assert client(req, 10000) == ("HTTP/1.1 200 OK\r\n" +
+                            "Date: Mon, 23 May 2005 22:38:34 GMT\r\n" +
+                            "Server: Apache/1.3.3.7 (Unix) (Red-Hat/Linux)\r\n" +
+                            "Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\r\n" +
+                            "Etag: '3f80f-1b6-3e1cb03b'\r\n" +
+                            "Accept-Ranges:  none\r\n" +
+                            "Content-Length: " + str(len(body)) + "\r\n" +
+                            "Connection: close\r\n" +
+                            "Content-Type: " + file_type + "\r\n" +
+                            "\r\n" + body)
 
 
-# def test_response_failed():
-#     """Tests to see if invalid client request will return a 500 Error message"""
-#     from client import client
-#     assert client("fuck you.", 10000) == response
+def test_response_failed():
+    """Tests to see if invalid client request will return a 500 Error message"""
+    from client import client
+    assert client("fuck you.", 10000) == ("HTTP/1.1 405 Method Not Allowed\r\n" +
+        "Date: Mon, 23 May 2005 22:38:34 GMT\r\n" +
+        "Server: Apache/1.3.3.7 (Unix) (Red-Hat/Linux)\r\n" +
+        "Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\r\n" +
+        "Etag: '3f80f-1b6-3e1cb03b'\r\n" +
+        "Accept-Ranges:  none\r\n" +
+        "Content-Length: 438\r\n" +
+        "Connection: close\r\n" +
+        "Content-Type: text/html; charset=UTF-8\r\n" +
+        "\r\n" +
+        "<438 bytes of content>")
