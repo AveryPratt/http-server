@@ -60,6 +60,7 @@ def parse_request(request):
     elif not format_validation(request):
         return response_error("format")
     try:
+        print(request)
         uri = request.split(" ", 2)[1]
         info = resolve_uri(uri)
     except IOError:
@@ -68,14 +69,14 @@ def parse_request(request):
 
 
 def method_validation(request):
-    """"""
+    """Validates that request is of type 'Get'."""
     if request[0:4] != "GET ":
         return False
     return True
 
 
 def version_validation(request):
-    """Docstring"""
+    """Validates that request uses the right version of HTTP."""
     for ind in range(0, len(request)):
         if request[ind:ind + 9] == " HTTP/1.1":
             return True
@@ -83,7 +84,7 @@ def version_validation(request):
 
 
 def host_validation(request):
-    """Docstring"""
+    """Validates that """
     for ind in range(0, len(request)):
         if request[ind:ind + 8] == "\r\nHost: ":
             return True

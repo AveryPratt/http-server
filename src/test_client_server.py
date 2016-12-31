@@ -13,15 +13,6 @@ png_file_read = png_file_text.read()
 
 GOOD_REQUESTS = [
     [
-        ".dir",
-        ("GET webroot HTTP/1.1\r\n" +
-        "Date: Mon, 27 Jul 1884 12:28:53 GMT\r\n" +
-        "Server: Teddy Bear\r\n" +
-        "Host:  \r\n"),
-        ("<html><body><ul><li>a_web_page.html</li><li>images</li><li>make_time.py</li>" +
-        "<li>sample.txt</li></ul></body></html>")
-    ],
-    [
         ".html",
         ("GET webroot/a_web_page.html HTTP/1.1\r\n" +
         "Date: Mon, 27 Jul 1884 12:28:53 GMT\r\n" +
@@ -50,22 +41,22 @@ GOOD_REQUESTS = [
         "Host:  \r\n"),
         ("This is a very simple text file.\nJust to show that we can serve it up.\nIt is three lines long.")
     ],
-    [
-        ".png",
-        ("GET webroot/images/sample_1.png HTTP/1.1\r\n" +
-        "Date: Mon, 27 Jul 1884 12:28:53 GMT\r\n" +
-        "Server: Teddy Bear\r\n" +
-        "Host:  \r\n"),
-        png_file_read
-    ],
-    [
-        ".jpg",
-        ("GET webroot/images/Sample_Scene_Balls.jpg HTTP/1.1\r\n" +
-        "Date: Mon, 27 Jul 1884 12:28:53 GMT\r\n" +
-        "Server: Teddy Bear\r\n" +
-        "Host:  \r\n"),
-        jpg_file_read
-    ],
+    # [
+    #     ".png",
+    #     ("GET webroot/images/sample_1.png HTTP/1.1\r\n" +
+    #     "Date: Mon, 27 Jul 1884 12:28:53 GMT\r\n" +
+    #     "Server: Teddy Bear\r\n" +
+    #     "Host:  \r\n"),
+    #     png_file_read
+    # ],
+    # [
+    #     ".jpg",
+    #     ("GET webroot/images/Sample_Scene_Balls.jpg HTTP/1.1\r\n" +
+    #     "Date: Mon, 27 Jul 1884 12:28:53 GMT\r\n" +
+    #     "Server: Teddy Bear\r\n" +
+    #     "Host:  \r\n"),
+    #     jpg_file_read
+    # ],
 ]
 
 
@@ -264,6 +255,17 @@ def test_check_ok_response(file_type, req, body):
                                 "Connection: close\r\n" +
                                 "Content-Type: " + file_type + "\r\n" +
                                 "\r\n" + body)
+
+def test_check_ok_response():
+    """Tests to see if file paths in request return correct files"""
+    from stream_server import parse_request
+
+    body = parse_request(("GET webroot HTTP/1.1\r\n" +
+        "Date: Mon, 27 Jul 1884 12:28:53 GMT\r\n" +
+        "Server: Teddy Bear\r\n" +
+        "Host:  \r\n"))
+
+    assert '<li>a_web_page.html</li>' in body and "<li>images</li>" in body and "<li>make_time.py</li>" in body and "<li>sample.txt</li>" in body
 
 
 # def test_check_404():
