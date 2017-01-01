@@ -65,7 +65,6 @@ def parse_request(request):
         info = resolve_uri(uri)
     except IOError:
         return response_error("404")
-    # import pdb; pdb.set_trace()
     return response_error("OK", info[0], info[1])
 
 
@@ -139,11 +138,7 @@ def resolve_uri(uri):
 
 def response_error(key, body='', content_type=''):
     """Returns the response for the error (or OK) specified by the key."""
-    if content_type == ".jpg":
-        content_type = "image/jpeg"
-    elif content_type == ".png":
-        content_type = "image/png"
-    else:
+    if content_type != ".jpg" and content_type != ".png":
         body = body.encode("utf-8")
     response_dict = {
         "OK": ("HTTP/1.1 200 OK\r\n" +
