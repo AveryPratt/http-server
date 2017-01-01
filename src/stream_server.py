@@ -60,7 +60,6 @@ def parse_request(request):
     elif not format_validation(request):
         return response_error("format")
     try:
-        print(request)
         uri = request.split(" ", 2)[1]
         info = resolve_uri(uri)
     except IOError:
@@ -120,8 +119,10 @@ def resolve_uri(uri):
     """Docstring"""
     import io
     import os
+    dir_path = os.path.dirname(os.path.realpath('webroot'))
     if "." not in uri:
         content_type = ".dir"
+        uri = uri + dir_path + '/webroot'
         fials = os.listdir(uri)
         center = "</li><li>".join(fials)
         body = "<html><body><ul><li>" + center + "</li></ul></body></html>"
