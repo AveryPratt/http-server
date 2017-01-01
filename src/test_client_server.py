@@ -296,7 +296,7 @@ def test_check_404():
 def test_response_ok(file_type, req, body):
     """Tests to see if valid client request will return a 200 OK message."""
     from client import client
-    if file_type != ".png" and file_type != ".jpg":
+    if file_type == ".png" or file_type == ".jpg":
         assert client(req, 10000) == ("HTTP/1.1 200 OK\r\n" +
             "Date: Mon, 23 May 2005 22:38:34 GMT\r\n" +
             "Server: Apache/1.3.3.7 (Unix) (Red-Hat/Linux)\r\n" +
@@ -306,9 +306,18 @@ def test_response_ok(file_type, req, body):
             "Content-Length: " + str(len(body)) + "\r\n" +
             "Connection: close\r\n" +
             "Content-Type: " + file_type + "\r\n" +
-            "\r\n") + body
+            "\r\n").encode("utf-8") + body
     else:
-        assert client(req, 10000) != ""
+        assert client(req, 10000) == ("HTTP/1.1 200 OK\r\n" +
+            "Date: Mon, 23 May 2005 22:38:34 GMT\r\n" +
+            "Server: Apache/1.3.3.7 (Unix) (Red-Hat/Linux)\r\n" +
+            "Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\r\n" +
+            "Etag: '3f80f-1b6-3e1cb03b'\r\n" +
+            "Accept-Ranges:  none\r\n" +
+            "Content-Length: " + str(len(body)) + "\r\n" +
+            "Connection: close\r\n" +
+            "Content-Type: " + file_type + "\r\n" +
+            "\r\n" + body).encode("utf-8")
 
 
 def test_response_failed():
@@ -324,4 +333,4 @@ def test_response_failed():
         "Connection: close\r\n" +
         "Content-Type: text/html; charset=UTF-8\r\n" +
         "\r\n" +
-        "<438 bytes of content>")
+        "<438 bytes of content>").encode("utf-8")

@@ -14,14 +14,22 @@ def client(message, port):
     client_socket = socket.socket(*stream_info[:3])
     client_socket.connect(stream_info[-1])
     buffer_length = 8
-    reply_complete = False
     response = ""
     print(message.encode('utf-8'))
     client_socket.sendall(message.encode('utf-8'))
-    while not reply_complete:
-        data = client_socket.recv(buffer_length).decode('utf-8')
-        response += data
+    start_response = b""
+    while b"\r\n\r\n" not in start_response:
+        data = client_socket.recv(buffer_length)
+        start_response += data
+    stop_ind = start_response.index(b"\r\n\r\n") + 4
+    response = start_response[:stop_ind].decode("utf-8")
+    body = start_response[stop_ind:]
+    while True:
+        data = client_socket.recv(buffer_length)
+        body += data
         if len(data) < buffer_length:
             break
+    # if "Content-Type: .png" not in response and "Content-Type: .jpg" not in response:
+    #     body = body.decode("utf-8")
     client_socket.close()
-    return response
+    return response.encode("utf-8") + body
