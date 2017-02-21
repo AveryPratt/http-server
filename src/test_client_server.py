@@ -6,21 +6,16 @@ import client
 import server
 
 
-# def test1():
-#     """Test if string that is shorter than buffer length gets sent."""
-#     assert client.client("hello") == "hello"
-
-
-def test2():
+def test_message_longer_than_buffer():
     """Test if string that is longer than buffer length gets sent."""
     assert client.client("I don't know why you say 'goodbye' I say 'hello'") == "I don't know why you say 'goodbye' I say 'hello'"
 
 
-def test3():
-    """Test if string that is longer than buffer length gets sent."""
+def test_message_same_length_as_buffer():
+    """Test if string that is same length buffer length gets sent."""
     assert client.client("hlo gdby") == "hlo gdby"
 
 
-def test4():
-    """Test if string that is longer than buffer length gets sent."""
+def test_message_shorter_than_buffer():
+    """Test if string that is shorter than buffer length gets sent."""
     assert client.client("¡¢£¤¥") == "¡¢£¤¥"

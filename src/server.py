@@ -6,9 +6,9 @@ import sys
 
 
 def server():
-    """Recieves a message from the client and echos it back."""
+    """Recieve a message from the client and echos it back."""
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM, socket.IPPROTO_TCP)
-    address = ("127.0.0.1", 5002)
+    address = ("127.0.0.1", 5005)
     server_socket.bind(address)
     server_socket.listen(3)
     conn, addr = server_socket.accept()
@@ -22,3 +22,7 @@ def server():
     conn.sendall(response.encode('utf8'))
     conn.close()
     return response
+
+if __name__ == '__main__':
+    """Run server from command line."""
+    server()
