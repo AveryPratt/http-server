@@ -32,4 +32,5 @@ def client(message, port):
     # if "Content-Type: .png" not in response and "Content-Type: .jpg" not in response:
     #     body = body.decode("utf-8")
     client_socket.close()
+    print(response.encode('utf-8') + body)
     return response.encode("utf-8") + body

@@ -13,6 +13,7 @@ setup(
     license="MIT",
     package_dir={'': 'src'},
     py_modules=["client", "server"],
+    install_requires=['gevent'],
     extras_require={
         "test": ["pytest"]
     },

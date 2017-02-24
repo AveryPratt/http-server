@@ -11,15 +11,11 @@ request is valid:
 """
 
 
-import socket
 import io
 
 
 def server(socket, address):
-    """Sets up a socket bound to an address and a port.
-    Listens for and accepts incoming client connections.
-    Processes client requests, builds an appropriate response,
-    and sends that response back to the client."""
+    """Recieve a message from the client and sends a response back."""
     # server_socket = socket
     # server_socket.bind(address)
     # server_socket.listen(1)
@@ -33,10 +29,7 @@ def server(socket, address):
 
 
 def buffer_request(buffer_length, socket):
-    """Recieves client requests. Returns a string of 
-    the client request plus a dollar sign.Removes a stray 
-    dollar sign from client messages evenly
-    divisible by eight."""
+    """Return a decoded client request."""
     req = ""
     while True:
         addition = socket.recv(buffer_length).decode('utf-8')
@@ -49,8 +42,7 @@ def buffer_request(buffer_length, socket):
 
 
 def parse_request(request):
-    """Takes the client's request as a parameter.
-    Returns the appropriate resopnse."""
+    """Return a server response based on client request formatting."""
     if not method_validation(request):
         return response_error("method")
     elif not version_validation(request):
@@ -69,14 +61,14 @@ def parse_request(request):
 
 
 def method_validation(request):
-    """Validates that request is of type 'Get'."""
+    """Verify method formatting and type."""
     if request[0:4] != "GET ":
         return False
     return True
 
 
 def version_validation(request):
-    """Validates that request uses the right version of HTTP."""
+    """Verify version formatting and type."""
     for ind in range(0, len(request)):
         if request[ind:ind + 9] == " HTTP/1.1":
             return True
@@ -84,7 +76,7 @@ def version_validation(request):
 
 
 def host_validation(request):
-    """Validates that """
+    """Verify host formatting and type."""
     for ind in range(0, len(request)):
         if request[ind:ind + 8] == "\r\nHost: ":
             return True
@@ -92,7 +84,7 @@ def host_validation(request):
 
 
 def format_validation(request):
-    """Docstring"""
+    """Verify format formatting and type."""
     val_count = 0
     for ind in range(0, len(request)):
         if val_count == 0 or val_count == 1:
@@ -117,12 +109,13 @@ def format_validation(request):
 
 
 def resolve_uri(uri):
-    """Docstring"""
-    import io
+    """Uri determines response body content."""
     import os
-    if "." not in uri:
-        content_type = ".dir"
+    root = 'webroot'
+    uri = find_dir(root + uri)
+    if os.path.isdir(uri):
         fials = os.listdir(uri)
+        content_type = ".dir"
         center = "</li><li>".join(fials)
         body = "<html><body><ul><li>" + center + "</li></ul></body></html>"
     else:
@@ -130,28 +123,19 @@ def resolve_uri(uri):
         content_type = uri[ind:]
         if content_type == ".jpg" or content_type == ".png":
             fial = io.open(uri, "rb")
+            body = str(fial.read())
         else:
             fial = io.open(uri, "r")
-        body = fial.read()
+            body = fial.read()
+        fial.close()
     return body, content_type
 
 
 def response_error(key, body='', content_type=''):
-    """Returns the response for the error (or OK) specified by the key."""
+    """Return the response for the error (or OK) specified by the key."""
     if content_type != ".jpg" and content_type != ".png":
         body = body.encode("utf-8")
     response_dict = {
-        "OK": ("HTTP/1.1 200 OK\r\n" +
-                    "Date: Mon, 23 May 2005 22:38:34 GMT\r\n" +
-                    "Server: Apache/1.3.3.7 (Unix) (Red-Hat/Linux)\r\n" +
-                    "Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\r\n" +
-                    "Etag: '3f80f-1b6-3e1cb03b'\r\n" +
-                    "Accept-Ranges:  none\r\n" +
-                    "Content-Length: " + str(len(body)) + "\r\n" +
-                    "Connection: close\r\n" +
-                    "Content-Type: " + content_type + "\r\n" +
-                    "\r\n"
-                    ).encode("utf-8") + body,
         "method": ("HTTP/1.1 405 Method Not Allowed\r\n" +
                     "Date: Mon, 23 May 2005 22:38:34 GMT\r\n" +
                     "Server: Apache/1.3.3.7 (Unix) (Red-Hat/Linux)\r\n" +
@@ -208,10 +192,28 @@ def response_error(key, body='', content_type=''):
                     "\r\n" +
                     "<438 bytes of content>")
     }
-    for each in response_dict:
-        if key == each:
-            return response_dict[key]
-    return response_dict["format"]
+    if content_type == ".png":
+        content_type = 'image/png'
+    elif content_type == ".jpg":
+        content_type = 'image/jpeg'
+    if key == "OK":
+        response_dict[key] = ("HTTP/1.1 200 OK\r\n"
+            "Date: Mon, 23 May 2005 22:38:34 GMT\r\n"
+            "Server: Apache/1.3.3.7 (Unix) (Red-Hat/Linux)\r\n"
+            "Last-Modified: Wed, 08 Jan 2003 23:11:55 GMT\r\n"
+            "Etag: '3f80f-1b6-3e1cb03b'\r\n"
+            "Accept-Ranges:  none\r\n"
+            "Content-Length: " + str(len(body)) + "\r\n"
+            "Connection: close\r\n"
+            "Content-Type: " + content_type + "; charset=UTF-8\r\n"
+            "\r\n" + body.decode('utf-8'))
+    return response_dict[key] if key in response_dict else response_dict['format']
+
+
+def find_dir(uri):
+    """Find location of the uri on your system."""
+    import os
+    return os.path.join(os.path.dirname(os.path.realpath(__file__)), uri)
 
 
 if __name__ == '__main__':

@@ -1,20 +1,23 @@
+# encoding:utf-8
+
 """Tests to make sure client and server can communicate via sockets."""
 
 
 import pytest
 import io
 
+# AVERY'S CODE!!!!!!!!!!!AVERY'S CODE!!!!!!!!!!!
 
-jpg_file_text = io.open('webroot/images/Sample_Scene_Balls.jpg', 'rb')
-jpg_file_read = jpg_file_text.read()
-png_file_text = io.open('webroot/images/sample_1.png', 'rb')
-png_file_read = png_file_text.read()
+# jpg_file_text = io.open('webroot/images/Sample_Scene_Balls.jpg', 'rb')
+# jpg_file_read = jpg_file_text.read()
+# png_file_text = io.open('webroot/images/sample_1.png', 'rb')
+# png_file_read = png_file_text.read()
 
 
 GOOD_REQUESTS = [
     [
         ".html",
-        ("GET webroot/a_web_page.html HTTP/1.1\r\n" +
+        ("GET /a_web_page.html HTTP/1.1\r\n" +
         "Date: Mon, 27 Jul 1884 12:28:53 GMT\r\n" +
         "Server: Teddy Bear\r\n" +
         "Host:  \r\n"),
@@ -23,7 +26,7 @@ GOOD_REQUESTS = [
     ],
     [
         ".py",
-        ("GET webroot/make_time.py HTTP/1.1\r\n" +
+        ("GET /make_time.py HTTP/1.1\r\n" +
         "Date: Mon, 27 Jul 1884 12:28:53 GMT\r\n" +
         "Server: Teddy Bear\r\n" +
         "Host:  \r\n"),
@@ -35,28 +38,31 @@ GOOD_REQUESTS = [
     ],
     [
         ".txt",
-        ("GET webroot/sample.txt HTTP/1.1\r\n" +
+        ("GET /sample.txt HTTP/1.1\r\n" +
         "Date: Mon, 27 Jul 1884 12:28:53 GMT\r\n" +
         "Server: Teddy Bear\r\n" +
         "Host:  \r\n"),
         ("This is a very simple text file.\nJust to show that we can serve it up.\nIt is three lines long.")
     ],
-    [
-        ".png",
-        ("GET webroot/images/sample_1.png HTTP/1.1\r\n" +
-        "Date: Mon, 27 Jul 1884 12:28:53 GMT\r\n" +
-        "Server: Teddy Bear\r\n" +
-        "Host:  \r\n"),
-        png_file_read
-    ],
-    [
-        ".jpg",
-        ("GET webroot/images/Sample_Scene_Balls.jpg HTTP/1.1\r\n" +
-        "Date: Mon, 27 Jul 1884 12:28:53 GMT\r\n" +
-        "Server: Teddy Bear\r\n" +
-        "Host:  \r\n"),
-        jpg_file_read
-    ],
+
+# AVERY'S CODE!!!!!!!!!!!AVERY'S CODE!!!!!!!!!!!
+
+    # [
+    #     ".png",
+    #     ("GET /images/sample_1.png HTTP/1.1\r\n" +
+    #     "Date: Mon, 27 Jul 1884 12:28:53 GMT\r\n" +
+    #     "Server: Teddy Bear\r\n" +
+    #     "Host:  \r\n"),
+    #     png_file_read
+    # ],
+    # [
+    #     ".jpg",
+    #     ("GET /images/Sample_Scene_Balls.jpg HTTP/1.1\r\n" +
+    #     "Date: Mon, 27 Jul 1884 12:28:53 GMT\r\n" +
+    #     "Server: Teddy Bear\r\n" +
+    #     "Host:  \r\n"),
+    #     jpg_file_read
+    # ],
 ]
 
 
@@ -203,7 +209,7 @@ PARAM_404_Request = [
 
 @pytest.mark.parametrize("status, req", REQUESTS)
 def test_method_validation(status, req):
-    """Tests to see if GET requests are valid and any other type of requests are invalid."""
+    """Test to see if GET requests are valid and any other type of requests are invalid."""
     from stream_server import method_validation
     valid = method_validation(req)
     if status == "method":
@@ -213,7 +219,7 @@ def test_method_validation(status, req):
 
 @pytest.mark.parametrize("status, req", REQUESTS)
 def test_version_validation(status, req):
-    """Tests to see if GET requests are valid and any other type of requests are invalid."""
+    """Test to see if GET requests are valid and any other type of requests are invalid."""
     from stream_server import version_validation
     valid = version_validation(req)
     if status == "version":
@@ -223,7 +229,7 @@ def test_version_validation(status, req):
 
 @pytest.mark.parametrize("status, req", REQUESTS)
 def test_host_validation(status, req):
-    """Tests to see if GET requests are valid and any other type of requests are invalid."""
+    """Test to see if GET requests are valid and any other type of requests are invalid."""
     from stream_server import host_validation
     valid = host_validation(req)
     if status == "host":
@@ -233,7 +239,7 @@ def test_host_validation(status, req):
 
 @pytest.mark.parametrize("status, req", REQUESTS)
 def test_format_validation(status, req):
-    """Tests to see if GET requests are valid and any other type of requests are invalid."""
+    """Test to see if GET requests are valid and any other type of requests are invalid."""
     from stream_server import format_validation
     valid = format_validation(req)
     if status == "format":
@@ -243,7 +249,7 @@ def test_format_validation(status, req):
 
 @pytest.mark.parametrize("file_type, req, body", GOOD_REQUESTS)
 def test_check_ok_response1(file_type, req, body):
-    """Tests to see if file paths in request return correct files"""
+    """Test to see if file paths in request return correct files."""
     from stream_server import parse_request
     if file_type != ".png" and file_type != ".jpg":
         body = body.encode("utf-8")
@@ -255,25 +261,24 @@ def test_check_ok_response1(file_type, req, body):
                                 "Accept-Ranges:  none\r\n" +
                                 "Content-Length: " + str(len(body)) + "\r\n" +
                                 "Connection: close\r\n" +
-                                "Content-Type: " + file_type + "\r\n" +
-                                "\r\n").encode('utf-8') + body
+                                "Content-Type: " + file_type + "; charset=UTF-8\r\n" +
+                                "\r\n") + body.decode('utf-8')
 
 
 def test_check_ok_response2():
-    """Tests to see if file paths in request return correct files"""
+    """Test to see if file paths in request return correct files."""
     from stream_server import parse_request
 
-    body = parse_request(("GET webroot HTTP/1.1\r\n" +
+    body = parse_request(("GET / HTTP/1.1\r\n" +
         "Date: Mon, 27 Jul 1884 12:28:53 GMT\r\n" +
         "Server: Teddy Bear\r\n" +
         "Host:  \r\n"))
 
-    assert '<li>a_web_page.html</li>' in body.decode("utf-8") and "<li>images</li>" in body.decode("utf-8") and "<li>make_time.py</li>" in body.decode("utf-8") and "<li>sample.txt</li>" in body.decode("utf-8")
+    assert '<li>a_web_page.html</li>' in body and "<li>images</li>" in body and "<li>make_time.py</li>" in body and "<li>sample.txt</li>" in body
 
 
 def test_check_404():
-    """Tests to see if a request with a file not in the directory
-    returns a 404 file not found response."""
+    """Test to see if a request with a file not in the directory returns a 404 file not found response."""
     from stream_server import parse_request
     assert parse_request("GET /teddy/bear.html HTTP/1.1\r\n" +
         "Date: Mon, 27 Jul 1884 12:28:53 GMT\r\n" +
@@ -292,9 +297,10 @@ def test_check_404():
 
 # uncomment below to run server tests
 
+
 @pytest.mark.parametrize('file_type, req, body', GOOD_REQUESTS)
 def test_response_ok(file_type, req, body):
-    """Tests to see if valid client request will return a 200 OK message."""
+    """Test to see if valid client request will return a 200 OK message."""
     from client import client
     if file_type == ".png" or file_type == ".jpg":
         assert client(req, 10000) == ("HTTP/1.1 200 OK\r\n" +
@@ -316,12 +322,12 @@ def test_response_ok(file_type, req, body):
             "Accept-Ranges:  none\r\n" +
             "Content-Length: " + str(len(body)) + "\r\n" +
             "Connection: close\r\n" +
-            "Content-Type: " + file_type + "\r\n" +
+            "Content-Type: " + file_type + "; charset=UTF-8\r\n" +
             "\r\n" + body).encode("utf-8")
 
 
 def test_response_failed():
-    """Tests to see if invalid client request will return a 500 Error message"""
+    """Test to see if invalid client request will return a 500 Error message."""
     from client import client
     assert client("fuck you.", 10000) == ("HTTP/1.1 405 Method Not Allowed\r\n" +
         "Date: Mon, 23 May 2005 22:38:34 GMT\r\n" +
